@@ -1,0 +1,49 @@
+{
+  "login": {
+    "title": "Đăng nhập vào tài khoản",
+    "password": "Mật khẩu",
+    "button": "Đăng nhập",
+    "network_error": "Lỗi mạng. Vui lòng kiểm tra kết nối của bạn.",
+    "forgot_password": "Quên mật khẩu?",
+    "loading": "Đang đăng nhập...",
+    "no_account": "Bạn chưa có tài khoản? ",
+    "contact_us": "Liên hệ với chúng tôi"
+  },
+  "inputs": {
+    "email": {
+      "label": "Email",
+      "placeholder": "ten@congty.com"
+    },
+    "password": {
+      "label": "Mât khẩu",
+      "placeholder": "Nhập mật khẩu của bạn"
+    }
+  },
+  "forgot_password": {
+    "send_otp_title": "Quên mật khẩu",
+    "send_otp_description": "Nhập địa chỉ email của bạn để đặt lại mật khẩu.",
+    "send_otp_button": "Gửi OTP đặt lại mật khẩu",
+    "send_otp_sending": "Đang gửi...",
+
+    "verify_otp_title": "Nhập mã Xác minh",
+    "verify_otp_description": "Chúng tôi đã gửi mã xác minh đến email của bạn. Vui lòng nhập nó bên dưới để tiếp tục.",
+    "verify_otp_button": "Xác minh",
+    "verify_otp_verifying": "Đang xác minh...",
+
+    "reset_password_title": "Tạo mật khẩu mới",
+    "reset_password_description": "Vui lòng nhập mật khẩu mới của bạn bên dưới.",
+    "reset_password_button": "Lưu mật khẩu mới",
+    "reset_password_resetting": "Đang lưu...",
+    "reset_password_label": "Mật khẩu mới",
+    "reset_password_placeholder": "Nhập mật khẩu mới của bạn",
+    "reset_password_confirm_label": "Xác nhận mật khẩu mới",
+    "reset_password_confirm_placeholder": "Nhập lại mật khẩu mới của bạn",
+
+
+    "back_to_login": "Quay lại đăng nhập",
+    "not_received_otp": "Chưa nhận được mã OTP?",
+    "resend_otp": "Gửi lại OTP",
+    "note": "Đảm bảo mật khẩu của bạn có ít nhất 8 ký tự."
+    
+  }
+}

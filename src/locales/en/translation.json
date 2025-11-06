@@ -1,0 +1,48 @@
+{
+  "login": {
+    "title": "Login to your account",
+    "email": "Email",
+    "password": "Password",
+    "button": "Login",
+    "network_error": "Network error. Please check your connection.",
+    "forgot_password": "Forgot password?",
+    "loading": "Logging In...",
+    "no_account": "Don't have an account? ",
+    "contact_us": "Contact us"
+  },
+  "inputs": {
+    "email": {
+      "label": "Email",
+      "placeholder": "name@company.com"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Enter your password"
+    }
+  },
+  "forgot_password": {
+    "send_otp_title": "Forgot Password",
+    "send_otp_description": "Enter your email address to reset your password.",
+    "send_otp_button": "Send OTP to reset password",
+    "send_otp_sending": "Sending...",
+
+    "verify_otp_title": "Enter Verification Code",
+    "verify_otp_description": "We've sent a verification code to your email. Please enter it below to continue.",
+    "verify_otp_button": "Verify",
+    "verify_otp_verifying": "Verifying...",
+
+    "reset_password_title": "Create new Password",
+    "reset_password_description": "Please enter your new password below.",
+    "reset_password_button": "Save new Password",
+    "reset_password_resetting": "Saving...",
+    "reset_password_label": "New Password",
+    "reset_password_placeholder": "Enter your new password",
+    "reset_password_confirm_label": "Confirm New Password",
+    "reset_password_confirm_placeholder": "Re-enter your new password",
+
+    "back_to_login": "Back to Login",
+    "not_received_otp": "Didn't receive the OTP?",
+    "resend_otp": "Resend",
+    "note": "Make sure your password is at least 8 characters long."
+  }
+}
