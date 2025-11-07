@@ -19,5 +19,7 @@ export const endpoints = {
     RESET_PASSWORD: '/auth/reset-password' as const,
     INTROSPECT_TOKEN: '/auth/introspect' as const,
     REFRESH_TOKEN: '/auth/refresh' as const,
+
     MY_INFO: '/api/v1/users/my-info' as const,
+    ALL_USERS: '/api/v1/users/' as const,
 };

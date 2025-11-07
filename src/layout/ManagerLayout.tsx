@@ -14,13 +14,14 @@ import {
 // import { Input } from '../components/Input';
 import useLogout from '../hooks/useLogout';
 import { Dashboard } from '../components/Dashboard';
-import { UserManagement } from '../components/UserManagement';
+
 import { StudentManagement } from '../components/StudentManagement';
 import { ParentManagement } from '../components/ParentManagement';
 import { CourseManagement } from '../components/CourseManagement';
 import { StaffManagement } from '../components/StaffManagement';
 import { FinanceManagement } from '../components/FinanceManagement';
 import { Input } from '../components/ui/input';
+import { UserManagement } from '../features/admin/users/UserManagement';
 // import { Dashboard } from '../components_/Dashboard';
 // import { UserManagement } from '../components_/UserManagement';
 // import { StudentManagement } from '../components_/StudentManagement';
@@ -113,7 +114,7 @@ const ManagerLayout: React.FC = () => {
                         const Icon = item.icon;
                         const isActive = activeSection === item.id;
 
-                        return (
+                       return (
                             <button
                                 key={item.id}
                                 onClick={() => setActiveSection(item.id)}
@@ -122,8 +123,12 @@ const ManagerLayout: React.FC = () => {
                                     : 'text-blue-100 hover:bg-blue-700'
                                     }`}
                             >
-                                <Icon size={20} className={isActive ? 'text-[#2563EB]' : 'text-blue-100'} />
-                                {item.label}
+                                <Icon
+                                    size={22}
+                                    strokeWidth={isActive ? 2.5 : 2}
+                                    className="shrink-0"
+                                />
+                                <span className="text-sm text-left">{item.label}</span>
                             </button>
                         );
                     })}
@@ -131,7 +136,7 @@ const ManagerLayout: React.FC = () => {
             </aside>
 
             {/* Main Content */}
-            <div className="flex-1 ml-72">
+            <div className="flex flex-col grow overflow-hidden">
                 <header className="fixed top-0 left-72 right-0 bg-white border-b border-gray-200 h-20 z-10">
                     <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-full">
                         <div className="flex items-center gap-4">
@@ -205,7 +210,7 @@ const ManagerLayout: React.FC = () => {
                     </div>
                 </header>
 
-                <main className="ml-72 pt-20 min-h-screen flex flex-col overflow-y-auto">
+                 <main className="ml-72 pt-20 min-h-screen flex flex-col overflow-y-auto">
                     <div className="flex-1 p-8">{renderContent()}</div>
                     <footer className="bg-white border-t border-gray-200 py-6">
                         <div className="text-center">

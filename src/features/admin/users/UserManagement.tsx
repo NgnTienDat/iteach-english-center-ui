@@ -1,12 +1,18 @@
 import { useState } from 'react';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { Badge } from './ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+// import { Card } from './ui/card';
+// import { Button } from './ui/button';
+// import { Input } from './ui/input';
+// import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
+// import { Badge } from './ui/badge';
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
-import { UserModal } from './UserModal';
+import { UserModal } from '../../../components/UserModal';
+import { Button } from '../../../components/ui/button';
+import { Card } from '../../../components/ui/card';
+import { Input } from '../../../components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
+import { Badge } from '../../../components/ui/badge';
 
 interface User {
   id: number;
