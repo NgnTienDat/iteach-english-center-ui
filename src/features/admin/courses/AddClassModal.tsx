@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
+import { Label } from '../../../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { Plus, X } from 'lucide-react';
 
 interface Class {
@@ -134,8 +134,8 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
               <Label htmlFor="classCourse">
                 Khóa học <span className="text-red-500">*</span>
               </Label>
-              <Select 
-                value={formData.course} 
+              <Select
+                value={formData.course}
                 onValueChange={(value) => setFormData({ ...formData, course: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
@@ -155,8 +155,8 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="classTeacher">Giảng viên</Label>
-              <Select 
-                value={formData.teacher} 
+              <Select
+                value={formData.teacher}
                 onValueChange={(value) => setFormData({ ...formData, teacher: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
@@ -174,8 +174,8 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
 
             <div className="space-y-2">
               <Label htmlFor="classRoom">Phòng học</Label>
-              <Select 
-                value={formData.room} 
+              <Select
+                value={formData.room}
                 onValueChange={(value) => setFormData({ ...formData, room: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
@@ -194,8 +194,8 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
 
           <div className="space-y-2">
             <Label htmlFor="classSchedule">Lịch học</Label>
-            <Select 
-              value={formData.schedule} 
+            <Select
+              value={formData.schedule}
               onValueChange={(value) => setFormData({ ...formData, schedule: value })}
             >
               <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
@@ -257,8 +257,8 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
               <Label htmlFor="classStatus">
                 Trạng thái <span className="text-red-500">*</span>
               </Label>
-              <Select 
-                value={formData.status} 
+              <Select
+                value={formData.status}
                 onValueChange={(value) => setFormData({ ...formData, status: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">

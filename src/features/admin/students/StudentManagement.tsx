@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { Badge } from './ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { Card } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
+import { Badge } from '../../../components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../components/ui/tooltip';
 import { Plus, Edit, Trash2, Search, Eye, User } from 'lucide-react';
-import { StudentDetailModal } from './StudentDetailModal';
-import { EditStudentModal } from './EditStudentModal';
-import { AddStudentModal } from './AddStudentModal';
-import { ParentDetailModal } from './ParentDetailModal';
-import type { Parent } from './ParentManagement';
+import { StudentDetailModal } from '../../../components/StudentDetailModal';
+import { EditStudentModal } from '../../../components/EditStudentModal';
+import { AddStudentModal } from '../../../components/AddStudentModal';
+import { ParentDetailModal } from '../../../components/ParentDetailModal';
+import type { Parent } from '../parents/ParentManagement';
 
 interface Student {
   id: string;
@@ -263,7 +263,7 @@ export function StudentManagement() {
             Manage student information, learning history and scores
           </p>
         </div>
-        <Button 
+        <Button
           onClick={() => setIsAddModalOpen(true)}
           className="bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-md"
         >
@@ -340,9 +340,9 @@ export function StudentManagement() {
             <TableRow>
               <TableHead>Student ID</TableHead>
               <TableHead>Full Name</TableHead>
-              <TableHead>Class</TableHead>
+              {/* <TableHead>Class</TableHead>
               <TableHead>Course</TableHead>
-              <TableHead>Avg Score</TableHead>
+              <TableHead>Avg Score</TableHead> */}
               <TableHead>Parent</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -353,13 +353,13 @@ export function StudentManagement() {
               <TableRow key={student.id}>
                 <TableCell>{student.id}</TableCell>
                 <TableCell>{student.name}</TableCell>
-                <TableCell className="text-sm">{student.class}</TableCell>
+                {/* <TableCell className="text-sm">{student.class}</TableCell>
                 <TableCell className="text-sm">{student.course}</TableCell>
                 <TableCell>
                   <Badge className="rounded-lg bg-[#FBBF24] text-gray-900 hover:bg-[#FBBF24]">
                     {student.averageScore}
                   </Badge>
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   {student.parentId && student.parentName ? (
                     <Tooltip>
@@ -385,11 +385,10 @@ export function StudentManagement() {
                 <TableCell>
                   <Badge
                     variant={student.status === 'active' ? 'default' : 'secondary'}
-                    className={`rounded-lg ${
-                      student.status === 'active'
-                        ? 'bg-green-100 text-green-700 hover:bg-green-100'
-                        : ''
-                    }`}
+                    className={`rounded-lg ${student.status === 'active'
+                      ? 'bg-green-100 text-green-700 hover:bg-green-100'
+                      : ''
+                      }`}
                   >
                     {student.status === 'active' ? 'Active' : 'Inactive'}
                   </Badge>

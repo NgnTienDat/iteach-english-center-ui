@@ -1,32 +1,41 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
+import { Label } from '../../../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { Save, X } from 'lucide-react';
+import type { Course, CourseUpdateRequest } from '../../../types/course';
+import type { User } from '../../../types/user';
+import { useCourse } from '../../../hooks/useCourse';
 
-interface Course {
-  id: string;
-  name: string;
-  duration: string;
-  teacher: string;
-  status: string;
-}
+
 
 interface EditCourseModalProps {
   isOpen: boolean;
   onClose: () => void;
   course: Course | null;
-  onSave: (updatedCourse: Course) => void;
+  teachers: User[] | [];
+  onSave: (updatedCourse: CourseUpdateRequest) => void;
 }
 
-export function EditCourseModal({ isOpen, onClose, course, onSave }: EditCourseModalProps) {
-  const [formData, setFormData] = useState<Course | null>(null);
+export function EditCourseModal({ isOpen, onClose, course, teachers, onSave }: EditCourseModalProps) {
+  const [formData, setFormData] = useState<CourseUpdateRequest | null>(null);
+  const { updateCourseMutation } = useCourse();
+  const courseId = course?.id || '';
+
 
   useEffect(() => {
     if (course) {
-      setFormData({ ...course });
+      setFormData({
+        name: course.name,
+        duration: course.duration || '',
+        courseLeaderId: course.courseLeaderId,
+        description: course.description || '',
+        price: course.price,
+        level: course.level || '',
+        active: course.active,
+      });
     }
   }, [course]);
 
@@ -34,6 +43,8 @@ export function EditCourseModal({ isOpen, onClose, course, onSave }: EditCourseM
 
   const handleSave = () => {
     onSave(formData);
+    updateCourseMutation.mutate({ courseId: courseId, payload: formData });
+    console.log('Saved course data:', formData);
     onClose();
   };
 
@@ -45,11 +56,12 @@ export function EditCourseModal({ isOpen, onClose, course, onSave }: EditCourseM
         </DialogHeader>
 
         <div className="space-y-4 py-4">
+
           <div className="space-y-2">
             <Label htmlFor="courseId">Mã khóa học</Label>
             <Input
               id="courseId"
-              value={formData.id}
+              value={course?.courseCode}
               disabled
               className="rounded-xl border-gray-300 bg-gray-50"
             />
@@ -59,7 +71,7 @@ export function EditCourseModal({ isOpen, onClose, course, onSave }: EditCourseM
             <Label htmlFor="courseName">Tên khóa học *</Label>
             <Input
               id="courseName"
-              value={formData.name}
+              value={course?.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
             />
@@ -69,7 +81,7 @@ export function EditCourseModal({ isOpen, onClose, course, onSave }: EditCourseM
             <Label htmlFor="courseDuration">Thời lượng *</Label>
             <Input
               id="courseDuration"
-              value={formData.duration}
+              value={course?.duration}
               onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
               placeholder="VD: 3 tháng"
               className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
@@ -78,23 +90,34 @@ export function EditCourseModal({ isOpen, onClose, course, onSave }: EditCourseM
 
           <div className="space-y-2">
             <Label htmlFor="courseTeacher">Giảng viên phụ trách *</Label>
-            <Select value={formData.teacher} onValueChange={(value) => setFormData({ ...formData, teacher: value })}>
+            <Select
+              value={formData.courseLeaderId || ''}
+              onValueChange={(value) => setFormData({ ...formData, courseLeaderId: value })}
+            >
               <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
-                <SelectValue />
+                <SelectValue
+                  placeholder="Chọn giảng viên"
+                >
+                  {teachers.find(t => t.id === formData.courseLeaderId)?.fullName}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Ms. Sarah Johnson">Ms. Sarah Johnson</SelectItem>
-                <SelectItem value="Mr. David Lee">Mr. David Lee</SelectItem>
-                <SelectItem value="Ms. Emma Wilson">Ms. Emma Wilson</SelectItem>
-                <SelectItem value="Ms. Linda Brown">Ms. Linda Brown</SelectItem>
-                <SelectItem value="Mr. John Smith">Mr. John Smith</SelectItem>
+                {teachers.map((teacher) => (
+                  <SelectItem key={teacher.id} value={teacher.id}>
+                    {teacher.fullName}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
+
           <div className="space-y-2">
             <Label htmlFor="courseStatus">Trạng thái *</Label>
-            <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+            <Select
+              value={course?.active ? "active" : "inactive"}
+              onValueChange={(value) => setFormData({ ...formData, active: value === "active" })}
+            >
               <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
                 <SelectValue />
               </SelectTrigger>

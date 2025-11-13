@@ -13,13 +13,13 @@ import {
 } from 'lucide-react';
 // import { Input } from '../components/Input';
 import useLogout from '../hooks/useLogout';
-import { Dashboard } from '../components/Dashboard';
+import { Dashboard } from '../features/admin/dashboard/Dashboard';
 
-import { StudentManagement } from '../components/StudentManagement';
-import { ParentManagement } from '../components/ParentManagement';
-import { CourseManagement } from '../components/CourseManagement';
-import { StaffManagement } from '../components/StaffManagement';
-import { FinanceManagement } from '../components/FinanceManagement';
+import { StudentManagement } from '../features/admin/students/StudentManagement';
+import { ParentManagement } from '../features/admin/parents/ParentManagement';
+import { CourseManagement } from '../features/admin/courses/CourseManagement';
+import { StaffManagement } from '../features/admin/staffs/StaffManagement';
+import { FinanceManagement } from '../features/admin/reports/FinanceManagement';
 import { Input } from '../components/ui/input';
 import { UserManagement } from '../features/admin/users/UserManagement';
 // import { Dashboard } from '../components_/Dashboard';
@@ -114,7 +114,7 @@ const ManagerLayout: React.FC = () => {
                         const Icon = item.icon;
                         const isActive = activeSection === item.id;
 
-                       return (
+                        return (
                             <button
                                 key={item.id}
                                 onClick={() => setActiveSection(item.id)}
@@ -210,7 +210,7 @@ const ManagerLayout: React.FC = () => {
                     </div>
                 </header>
 
-                 <main className="ml-72 pt-20 min-h-screen flex flex-col overflow-y-auto">
+                <main className="ml-72 pt-20 min-h-screen flex flex-col overflow-y-auto">
                     <div className="flex-1 p-8">{renderContent()}</div>
                     <footer className="bg-white border-t border-gray-200 py-6">
                         <div className="text-center">

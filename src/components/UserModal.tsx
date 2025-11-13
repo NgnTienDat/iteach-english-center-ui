@@ -5,14 +5,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  status: string;
-}
-
+import type { User } from '../services/authServices';
 interface UserModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -31,10 +24,10 @@ export function UserModal({ isOpen, onClose, onSave, user }: UserModalProps) {
   useEffect(() => {
     if (user) {
       setFormData({
-        name: user.name,
+        name: user.fullName,
         email: user.email,
         password: '',
-        role: user.role,
+        role: user.roles[0]?.roleName,
       });
     } else {
       setFormData({

@@ -3,7 +3,7 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Card } from './ui/card';
 import { X, Mail, Phone, Briefcase, MapPin, Users, Calendar } from 'lucide-react';
-import type { Parent } from './ParentManagement';
+import type { Parent } from '../features/admin/parents/ParentManagement';
 
 interface ParentDetailModalProps {
   isOpen: boolean;
@@ -28,11 +28,10 @@ export function ParentDetailModal({ isOpen, onClose, parent }: ParentDetailModal
               <div>
                 <h3 className="text-gray-900 mb-1">{parent.name}</h3>
                 <Badge
-                  className={`rounded-lg ${
-                    parent.status === 'active'
+                  className={`rounded-lg ${parent.status === 'active'
                       ? 'bg-green-100 text-green-700 hover:bg-green-100'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-100'
-                  }`}
+                    }`}
                 >
                   {parent.status === 'active' ? 'Đang hoạt động' : 'Không hoạt động'}
                 </Badge>

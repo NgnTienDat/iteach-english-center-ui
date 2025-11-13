@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
+import { Card } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { FileDown } from 'lucide-react';
-import { ParentExpenseManagement } from './ParentExpenseManagement';
+import { ParentExpenseManagement } from '../../../components/ParentExpenseManagement';
 
 const revenueData = [
   { month: 'Jan', revenue: 450, target: 500 },
@@ -62,44 +62,40 @@ export function FinanceManagement() {
         <Button
           variant={activeView === 'revenue' ? 'default' : 'ghost'}
           onClick={() => setActiveView('revenue')}
-          className={`rounded-xl px-6 py-3 transition-all ${
-            activeView === 'revenue'
+          className={`rounded-xl px-6 py-3 transition-all ${activeView === 'revenue'
               ? 'bg-[#2563EB] text-white hover:bg-[#1d4ed8] shadow-md'
               : 'hover:bg-gray-100 hover:text-[#2563EB]'
-          }`}
+            }`}
         >
           Revenue
         </Button>
         <Button
           variant={activeView === 'expenses' ? 'default' : 'ghost'}
           onClick={() => setActiveView('expenses')}
-          className={`rounded-xl px-6 py-3 transition-all ${
-            activeView === 'expenses'
+          className={`rounded-xl px-6 py-3 transition-all ${activeView === 'expenses'
               ? 'bg-[#2563EB] text-white hover:bg-[#1d4ed8] shadow-md'
               : 'hover:bg-gray-100 hover:text-[#2563EB]'
-          }`}
+            }`}
         >
           Expenses
         </Button>
         <Button
           variant={activeView === 'parent-expenses' ? 'default' : 'ghost'}
           onClick={() => setActiveView('parent-expenses')}
-          className={`rounded-xl px-6 py-3 transition-all ${
-            activeView === 'parent-expenses'
+          className={`rounded-xl px-6 py-3 transition-all ${activeView === 'parent-expenses'
               ? 'bg-[#2563EB] text-white hover:bg-[#1d4ed8] shadow-md'
               : 'hover:bg-gray-100 hover:text-[#2563EB]'
-          }`}
+            }`}
         >
           Parent Expenses
         </Button>
         <Button
           variant={activeView === 'reports' ? 'default' : 'ghost'}
           onClick={() => setActiveView('reports')}
-          className={`rounded-xl px-6 py-3 transition-all ${
-            activeView === 'reports'
+          className={`rounded-xl px-6 py-3 transition-all ${activeView === 'reports'
               ? 'bg-[#2563EB] text-white hover:bg-[#1d4ed8] shadow-md'
               : 'hover:bg-gray-100 hover:text-[#2563EB]'
-          }`}
+            }`}
         >
           Summary Reports
         </Button>
