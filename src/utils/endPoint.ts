@@ -22,4 +22,9 @@ export const endpoints = {
 
     MY_INFO: '/api/v1/users/my-info' as const,
     ALL_USERS: '/api/v1/users/' as const,
+
+    ALL_COURSES: '/api/v1/courses/' as const,
+    CREATE_COURSE: '/api/v1/courses' as const,
+    UPDATE_COURSE: (courseId: string) => `/api/v1/courses/${courseId}` as const,
+    DELETE_COURSE: (courseId: string) => `/api/v1/courses/${courseId}` as const,
 };

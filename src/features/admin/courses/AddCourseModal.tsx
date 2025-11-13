@@ -1,49 +1,43 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Textarea } from './ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
+import { Label } from '../../../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
+import { Textarea } from '../../../components/ui/textarea';
 import { Plus, X } from 'lucide-react';
+import type { User } from '../../../types/user';
+import type { CourseCreateRequest } from '../../../types/course';
+import { useCourse } from '../../../hooks/useCourse';
 
-interface Course {
-  name: string;
-  duration: string;
-  teacher: string;
-  status: string;
-  description?: string;
-  fee?: string;
-  level?: string;
-}
+
 
 interface AddCourseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (newCourse: Course) => void;
+  teachers: User[] | [];
+  onAdd: (newCourse: CourseCreateRequest) => void;
 }
 
-export function AddCourseModal({ isOpen, onClose, onAdd }: AddCourseModalProps) {
-  const [formData, setFormData] = useState<Course>({
+export function AddCourseModal({ isOpen, onClose, teachers, onAdd }: AddCourseModalProps) {
+  const { createCourseMutation } = useCourse();
+  const [formData, setFormData] = useState<CourseCreateRequest>({
     name: '',
     duration: '',
-    teacher: '',
-    status: 'active',
+    courseLeaderId: '',
     description: '',
-    fee: '',
+    price: 0,
     level: '',
   });
 
-  // Reset form when modal closes
   useEffect(() => {
     if (!isOpen) {
       setFormData({
         name: '',
         duration: '',
-        teacher: '',
-        status: 'active',
+        courseLeaderId: '',
         description: '',
-        fee: '',
+        price: 0,
         level: '',
       });
     }
@@ -51,22 +45,17 @@ export function AddCourseModal({ isOpen, onClose, onAdd }: AddCourseModalProps) 
 
   const handleAdd = () => {
     // Basic validation
-    if (!formData.name || !formData.duration || !formData.teacher) {
+    if (!formData.name || !formData.duration || !formData.courseLeaderId) {
       alert('Vui lòng điền đầy đủ thông tin bắt buộc');
       return;
     }
 
     onAdd(formData);
+    createCourseMutation.mutate(formData);
     onClose();
   };
 
-  const teacherOptions = [
-    'Ms. Sarah Johnson',
-    'Mr. David Lee',
-    'Ms. Emma Wilson',
-    'Ms. Linda Brown',
-    'Mr. John Smith',
-  ];
+
 
   const durationOptions = [
     '1 tháng',
@@ -109,8 +98,8 @@ export function AddCourseModal({ isOpen, onClose, onAdd }: AddCourseModalProps) 
 
             <div className="space-y-2">
               <Label htmlFor="courseLevel">Trình độ</Label>
-              <Select 
-                value={formData.level} 
+              <Select
+                value={formData.level}
                 onValueChange={(value) => setFormData({ ...formData, level: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
@@ -132,8 +121,8 @@ export function AddCourseModal({ isOpen, onClose, onAdd }: AddCourseModalProps) 
               <Label htmlFor="courseDuration">
                 Thời lượng <span className="text-red-500">*</span>
               </Label>
-              <Select 
-                value={formData.duration} 
+              <Select
+                value={formData.duration}
                 onValueChange={(value) => setFormData({ ...formData, duration: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
@@ -153,7 +142,21 @@ export function AddCourseModal({ isOpen, onClose, onAdd }: AddCourseModalProps) 
               <Label htmlFor="courseTeacher">
                 Giảng viên <span className="text-red-500">*</span>
               </Label>
-              <Select 
+              <Select
+                onValueChange={(value) => setFormData({ ...formData, courseLeaderId: value })}
+              >
+                <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
+                  <SelectValue placeholder="Chọn giảng viên" />
+                </SelectTrigger>
+                <SelectContent>
+                  {teachers.map((teacher) => (
+                    <SelectItem key={teacher.id} value={teacher.id}>
+                      {teacher.fullName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {/* <Select 
                 value={formData.teacher} 
                 onValueChange={(value) => setFormData({ ...formData, teacher: value })}
               >
@@ -167,7 +170,7 @@ export function AddCourseModal({ isOpen, onClose, onAdd }: AddCourseModalProps) 
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </Select>
+              </Select> */}
             </div>
           </div>
 
@@ -178,18 +181,18 @@ export function AddCourseModal({ isOpen, onClose, onAdd }: AddCourseModalProps) 
                 id="courseFee"
                 type="number"
                 placeholder="12000000"
-                value={formData.fee}
-                onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
                 className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
               />
             </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="courseStatus">
                 Trạng thái <span className="text-red-500">*</span>
               </Label>
-              <Select 
-                value={formData.status} 
+              <Select
+                value={formData.active}
                 onValueChange={(value) => setFormData({ ...formData, status: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
@@ -200,7 +203,7 @@ export function AddCourseModal({ isOpen, onClose, onAdd }: AddCourseModalProps) 
                   <SelectItem value="inactive">Tạm dừng</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
           </div>
 
           <div className="space-y-2">

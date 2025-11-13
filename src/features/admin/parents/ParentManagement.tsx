@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { Badge } from './ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Card } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
+import { Badge } from '../../../components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { Plus, Edit, Trash2, Search, Eye, Users } from 'lucide-react';
-import { EditParentModal } from './EditParentModal';
-import { ParentDetailModal } from './ParentDetailModal';
+import { EditParentModal } from '../../../components/EditParentModal';
+import { ParentDetailModal } from '../../../components/ParentDetailModal';
 
 export interface Parent {
   id: string;
@@ -251,11 +251,10 @@ export function ParentManagement() {
                 <TableCell className="text-sm">{parent.registrationDate}</TableCell>
                 <TableCell>
                   <Badge
-                    className={`rounded-lg ${
-                      parent.status === 'active'
+                    className={`rounded-lg ${parent.status === 'active'
                         ? 'bg-green-100 text-green-700 hover:bg-green-100'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-100'
-                    }`}
+                      }`}
                   >
                     {parent.status === 'active' ? 'Active' : 'Inactive'}
                   </Badge>

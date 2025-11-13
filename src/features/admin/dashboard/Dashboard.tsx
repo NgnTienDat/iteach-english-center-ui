@@ -1,8 +1,8 @@
-import { Card } from './ui/card';
+import { Card } from '../../../components/ui/card';
 import { Users, BookOpen, DollarSign, UsersRound } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { Badge } from './ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
+import { Badge } from '../../../components/ui/badge';
 
 const revenueData = [
   { month: 'Jan', revenue: 45000000 },
@@ -39,31 +39,31 @@ const activeClasses = [
 
 export function Dashboard() {
   const summaryCards = [
-    { 
-      title: 'Total Students', 
-      value: '1,245', 
-      icon: Users, 
+    {
+      title: 'Total Students',
+      value: '1,245',
+      icon: Users,
       color: 'bg-blue-500',
       change: '+12%'
     },
-    { 
-      title: 'Active Classes', 
-      value: '48', 
-      icon: BookOpen, 
+    {
+      title: 'Active Classes',
+      value: '48',
+      icon: BookOpen,
       color: 'bg-green-500',
       change: '+5%'
     },
-    { 
-      title: 'Monthly Revenue', 
-      value: '$67,000', 
-      icon: DollarSign, 
+    {
+      title: 'Monthly Revenue',
+      value: '$67,000',
+      icon: DollarSign,
       color: 'bg-amber-500',
       change: '+22%'
     },
-    { 
-      title: 'Current Staff', 
-      value: '32', 
-      icon: UsersRound, 
+    {
+      title: 'Current Staff',
+      value: '32',
+      icon: UsersRound,
       color: 'bg-purple-500',
       change: '+3%'
     },
@@ -101,7 +101,7 @@ export function Dashboard() {
               <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
               <XAxis dataKey="month" stroke="#6B7280" />
               <YAxis stroke="#6B7280" />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{ borderRadius: '12px', border: '1px solid #E5E7EB' }}
                 formatter={(value: number) => `$${(value / 1000000).toFixed(1)}M`}
               />
@@ -117,14 +117,14 @@ export function Dashboard() {
               <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
               <XAxis dataKey="month" stroke="#6B7280" />
               <YAxis stroke="#6B7280" />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{ borderRadius: '12px', border: '1px solid #E5E7EB' }}
                 formatter={(value: number) => `${value} students`}
               />
-              <Line 
-                type="monotone" 
-                dataKey="students" 
-                stroke="#FBBF24" 
+              <Line
+                type="monotone"
+                dataKey="students"
+                stroke="#FBBF24"
                 strokeWidth={3}
                 dot={{ fill: '#FBBF24', r: 5 }}
               />
@@ -153,7 +153,7 @@ export function Dashboard() {
                   <TableCell className="text-sm">{student.course}</TableCell>
                   <TableCell className="text-sm">{student.date}</TableCell>
                   <TableCell>
-                    <Badge 
+                    <Badge
                       variant={student.status === 'active' ? 'default' : 'secondary'}
                       className={`rounded-lg ${student.status === 'active' ? 'bg-green-100 text-green-700 hover:bg-green-100' : ''}`}
                     >

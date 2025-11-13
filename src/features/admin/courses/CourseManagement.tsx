@@ -1,22 +1,17 @@
 import { useState } from 'react';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { Badge } from './ui/badge';
+import { Card } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
+import { Badge } from '../../../components/ui/badge';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
 import { EditCourseModal } from './EditCourseModal';
 import { EditClassModal } from './EditClassModal';
 import { AddCourseModal } from './AddCourseModal';
 import { AddClassModal } from './AddClassModal';
-
-interface Course {
-  id: string;
-  name: string;
-  duration: string;
-  teacher: string;
-  status: string;
-}
+import { useCourse } from '../../../hooks/useCourse';
+import type { Course } from '../../../types/course';
+import { useUser } from '../../../hooks/useUser';
 
 interface Class {
   id: string;
@@ -28,96 +23,17 @@ interface Class {
   status: string;
 }
 
-const mockCourses: Course[] = [
-  {
-    id: 'CR001',
-    name: 'IELTS Foundation',
-    duration: '3 months',
-    teacher: 'Ms. Sarah Johnson',
-    status: 'active',
-  },
-  {
-    id: 'CR002',
-    name: 'IELTS Advanced',
-    duration: '4 months',
-    teacher: 'Mr. David Lee',
-    status: 'active',
-  },
-  {
-    id: 'CR003',
-    name: 'TOEIC Advanced',
-    duration: '2 months',
-    teacher: 'Ms. Emma Wilson',
-    status: 'active',
-  },
-  {
-    id: 'CR004',
-    name: 'Business English',
-    duration: '3 months',
-    teacher: 'Ms. Linda Brown',
-    status: 'inactive',
-  },
-  {
-    id: 'CR005',
-    name: 'General English',
-    duration: '6 months',
-    teacher: 'Mr. John Smith',
-    status: 'active',
-  },
-];
-
+// Giữ nguyên mock classes
 const mockClasses: Class[] = [
-  {
-    id: 'CL001',
-    name: 'IELTS 6.5+ Morning',
-    course: 'IELTS Foundation',
-    students: 15,
-    startDate: '02/01/2025',
-    endDate: '05/01/2025',
-    status: 'active',
-  },
-  {
-    id: 'CL002',
-    name: 'TOEIC 750+ Evening',
-    course: 'TOEIC Advanced',
-    students: 20,
-    startDate: '01/15/2025',
-    endDate: '03/15/2025',
-    status: 'active',
-  },
-  {
-    id: 'CL003',
-    name: 'Business English Pro',
-    course: 'Business English',
-    students: 12,
-    startDate: '03/01/2025',
-    endDate: '06/01/2025',
-    status: 'active',
-  },
-  {
-    id: 'CL004',
-    name: 'IELTS Advanced',
-    course: 'IELTS Advanced',
-    students: 18,
-    startDate: '02/10/2025',
-    endDate: '06/10/2025',
-    status: 'active',
-  },
-  {
-    id: 'CL005',
-    name: 'General English Morning',
-    course: 'General English',
-    students: 25,
-    startDate: '01/01/2025',
-    endDate: '07/01/2025',
-    status: 'completed',
-  },
+  { id: 'CL001', name: 'IELTS 6.5+ Morning', course: 'IELTS Foundation', students: 15, startDate: '02/01/2025', endDate: '05/01/2025', status: 'active' },
+  { id: 'CL002', name: 'TOEIC 750+ Evening', course: 'TOEIC Advanced', students: 20, startDate: '01/15/2025', endDate: '03/15/2025', status: 'active' },
+  { id: 'CL003', name: 'Business English Pro', course: 'Business English', students: 12, startDate: '03/01/2025', endDate: '06/01/2025', status: 'active' },
+  { id: 'CL004', name: 'IELTS Advanced', course: 'IELTS Advanced', students: 18, startDate: '02/10/2025', endDate: '06/10/2025', status: 'active' },
+  { id: 'CL005', name: 'General English Morning', course: 'General English', students: 25, startDate: '01/01/2025', endDate: '07/01/2025', status: 'completed' },
 ];
 
 export function CourseManagement() {
   const [activeView, setActiveView] = useState<'courses' | 'classes'>('courses');
-  const [courses, setCourses] = useState<Course[]>(mockCourses);
-  const [classes, setClasses] = useState<Class[]>(mockClasses);
   const [searchCourse, setSearchCourse] = useState('');
   const [searchClass, setSearchClass] = useState('');
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
@@ -127,13 +43,21 @@ export function CourseManagement() {
   const [isAddCourseModalOpen, setIsAddCourseModalOpen] = useState(false);
   const [isAddClassModalOpen, setIsAddClassModalOpen] = useState(false);
 
+
+  const { users } = useUser('teacher');
+  const { coursesQuery, deleteCourseMutation } = useCourse();
+
+  const courses = coursesQuery.data?.content || [];
+
+  // Filter courses search
   const filteredCourses = courses.filter(
     (course) =>
       course.name.toLowerCase().includes(searchCourse.toLowerCase()) ||
       course.id.toLowerCase().includes(searchCourse.toLowerCase())
   );
 
-  const filteredClasses = classes.filter(
+  // Filter classes search
+  const filteredClasses = mockClasses.filter(
     (cls) =>
       cls.name.toLowerCase().includes(searchClass.toLowerCase()) ||
       cls.id.toLowerCase().includes(searchClass.toLowerCase())
@@ -144,12 +68,10 @@ export function CourseManagement() {
     setIsEditCourseModalOpen(true);
   };
 
-  const handleSaveCourse = (updatedCourse: Course) => {
-    setCourses(courses.map((c) => (c.id === updatedCourse.id ? updatedCourse : c)));
-  };
-
   const handleDeleteCourse = (id: string) => {
-    setCourses(courses.filter((course) => course.id !== id));
+    if (confirm('Are you sure you want to delete this course?')) {
+      deleteCourseMutation.mutate(id);
+    }
   };
 
   const handleEditClass = (cls: Class) => {
@@ -157,30 +79,8 @@ export function CourseManagement() {
     setIsEditClassModalOpen(true);
   };
 
-  const handleSaveClass = (updatedClass: Class) => {
-    setClasses(classes.map((c) => (c.id === updatedClass.id ? updatedClass : c)));
-  };
-
   const handleDeleteClass = (id: string) => {
-    setClasses(classes.filter((cls) => cls.id !== id));
-  };
-
-  const handleAddCourse = (newCourse: Omit<Course, 'id'>) => {
-    const newId = `CR${String(courses.length + 1).padStart(3, '0')}`;
-    const fullCourse: Course = {
-      ...newCourse,
-      id: newId,
-    };
-    setCourses([...courses, fullCourse]);
-  };
-
-  const handleAddClass = (newClass: Omit<Class, 'id'>) => {
-    const newId = `CL${String(classes.length + 1).padStart(3, '0')}`;
-    const fullClass: Class = {
-      ...newClass,
-      id: newId,
-    };
-    setClasses([...classes, fullClass]);
+    console.log('Delete class id', id);
   };
 
   return (
@@ -196,22 +96,20 @@ export function CourseManagement() {
         <Button
           variant={activeView === 'courses' ? 'default' : 'ghost'}
           onClick={() => setActiveView('courses')}
-          className={`rounded-l-xl px-6 py-3 transition-all ${
-            activeView === 'courses'
-              ? 'bg-[#2563EB] text-white hover:bg-[#1d4ed8] shadow-md'
-              : 'hover:bg-gray-100 hover:text-[#2563EB]'
-          }`}
+          className={`rounded-l-xl px-6 py-3 transition-all ${activeView === 'courses'
+            ? 'bg-[#2563EB] text-white hover:bg-[#1d4ed8] shadow-md'
+            : 'hover:bg-gray-100 hover:text-[#2563EB]'
+            }`}
         >
           Course List
         </Button>
         <Button
           variant={activeView === 'classes' ? 'default' : 'ghost'}
           onClick={() => setActiveView('classes')}
-          className={`rounded-r-xl px-6 py-3 transition-all ${
-            activeView === 'classes'
-              ? 'bg-[#2563EB] text-white hover:bg-[#1d4ed8] shadow-md'
-              : 'hover:bg-gray-100 hover:text-[#2563EB]'
-          }`}
+          className={`rounded-r-xl px-6 py-3 transition-all ${activeView === 'classes'
+            ? 'bg-[#2563EB] text-white hover:bg-[#1d4ed8] shadow-md'
+            : 'hover:bg-gray-100 hover:text-[#2563EB]'
+            }`}
         >
           Class List
         </Button>
@@ -229,7 +127,7 @@ export function CourseManagement() {
                 className="pl-10 rounded-xl border-gray-300"
               />
             </div>
-            <Button 
+            <Button
               onClick={() => setIsAddCourseModalOpen(true)}
               className="bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-md"
             >
@@ -252,21 +150,20 @@ export function CourseManagement() {
               </TableHeader>
               <TableBody>
                 {filteredCourses.map((course) => (
-                  <TableRow key={course.id}>
-                    <TableCell>{course.id}</TableCell>
+                  <TableRow key={course.courseCode}>
+                    <TableCell>{course.courseCode}</TableCell>
                     <TableCell>{course.name}</TableCell>
                     <TableCell className="text-sm">{course.duration}</TableCell>
-                    <TableCell className="text-sm">{course.teacher}</TableCell>
+                    <TableCell className="text-sm">{course.courseLeaderName}</TableCell>
                     <TableCell>
                       <Badge
-                        variant={course.status === 'active' ? 'default' : 'secondary'}
-                        className={`rounded-lg ${
-                          course.status === 'active'
-                            ? 'bg-green-100 text-green-700 hover:bg-green-100'
-                            : ''
-                        }`}
+                        variant={course.active === true ? 'default' : 'secondary'}
+                        className={`rounded-lg ${course.active === true
+                          ? 'bg-green-100 text-green-700 hover:bg-green-100'
+                          : ''
+                          }`}
                       >
-                        {course.status === 'active' ? 'Active' : 'Inactive'}
+                        {course.active === true ? 'Active' : 'Inactive'}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
@@ -311,7 +208,7 @@ export function CourseManagement() {
                 className="pl-10 rounded-xl border-gray-300"
               />
             </div>
-            <Button 
+            <Button
               onClick={() => setIsAddClassModalOpen(true)}
               className="bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-md"
             >
@@ -345,19 +242,18 @@ export function CourseManagement() {
                     <TableCell className="text-sm">{cls.endDate}</TableCell>
                     <TableCell>
                       <Badge
-                        className={`rounded-lg ${
-                          cls.status === 'active'
-                            ? 'bg-green-100 text-green-700 hover:bg-green-100'
-                            : cls.status === 'completed'
+                        className={`rounded-lg ${cls.status === 'active'
+                          ? 'bg-green-100 text-green-700 hover:bg-green-100'
+                          : cls.status === 'completed'
                             ? 'bg-blue-100 text-blue-700 hover:bg-blue-100'
                             : ''
-                        }`}
+                          }`}
                       >
                         {cls.status === 'active'
                           ? 'In Progress'
                           : cls.status === 'completed'
-                          ? 'Completed'
-                          : 'Not Started'}
+                            ? 'Completed'
+                            : 'Not Started'}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
@@ -394,26 +290,28 @@ export function CourseManagement() {
         isOpen={isEditCourseModalOpen}
         onClose={() => setIsEditCourseModalOpen(false)}
         course={editingCourse}
-        onSave={handleSaveCourse}
+        teachers={users ?? []}
+        onSave={(updated) => console.log('Save course', updated)}
       />
 
       <EditClassModal
         isOpen={isEditClassModalOpen}
         onClose={() => setIsEditClassModalOpen(false)}
         classData={editingClass}
-        onSave={handleSaveClass}
+        onSave={(updated) => console.log('Save class', updated)}
       />
 
       <AddCourseModal
         isOpen={isAddCourseModalOpen}
         onClose={() => setIsAddCourseModalOpen(false)}
-        onAdd={handleAddCourse}
+        teachers={users ?? []}
+        onAdd={(newCourse) => console.log('Add course', newCourse)}
       />
 
       <AddClassModal
         isOpen={isAddClassModalOpen}
         onClose={() => setIsAddClassModalOpen(false)}
-        onAdd={handleAddClass}
+        onAdd={(newClass) => console.log('Add class', newClass)}
       />
     </div>
   );

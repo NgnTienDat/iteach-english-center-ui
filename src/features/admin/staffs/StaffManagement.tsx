@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { Badge } from './ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Card } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
+import { Badge } from '../../../components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
-import { EditStaffModal } from './EditStaffModal';
-import { AddStaffModal } from './AddStaffModal';
+import { EditStaffModal } from '../../../components/EditStaffModal';
+import { AddStaffModal } from '../../../components/AddStaffModal';
 
 interface Staff {
   id: number;
@@ -187,22 +187,20 @@ export function StaffManagement() {
         <Button
           variant={activeView === 'teachers' ? 'default' : 'ghost'}
           onClick={() => setActiveView('teachers')}
-          className={`rounded-l-xl px-6 py-3 transition-all ${
-            activeView === 'teachers'
+          className={`rounded-l-xl px-6 py-3 transition-all ${activeView === 'teachers'
               ? 'bg-[#2563EB] text-white hover:bg-[#1d4ed8] shadow-md'
               : 'hover:bg-gray-100 hover:text-[#2563EB]'
-          }`}
+            }`}
         >
           Teachers
         </Button>
         <Button
           variant={activeView === 'staff' ? 'default' : 'ghost'}
           onClick={() => setActiveView('staff')}
-          className={`rounded-r-xl px-6 py-3 transition-all ${
-            activeView === 'staff'
+          className={`rounded-r-xl px-6 py-3 transition-all ${activeView === 'staff'
               ? 'bg-[#2563EB] text-white hover:bg-[#1d4ed8] shadow-md'
               : 'hover:bg-gray-100 hover:text-[#2563EB]'
-          }`}
+            }`}
         >
           Center Staff
         </Button>
@@ -238,7 +236,7 @@ export function StaffManagement() {
                 </Select>
               </div>
             </div>
-            <Button 
+            <Button
               onClick={handleAddTeacher}
               className="bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-md"
             >
@@ -273,11 +271,10 @@ export function StaffManagement() {
                     <TableCell>
                       <Badge
                         variant={teacher.status === 'active' ? 'default' : 'secondary'}
-                        className={`rounded-lg ${
-                          teacher.status === 'active'
+                        className={`rounded-lg ${teacher.status === 'active'
                             ? 'bg-green-100 text-green-700 hover:bg-green-100'
                             : ''
-                        }`}
+                          }`}
                       >
                         {teacher.status === 'active' ? 'Active' : 'On Leave'}
                       </Badge>
@@ -341,7 +338,7 @@ export function StaffManagement() {
                 </Select>
               </div>
             </div>
-            <Button 
+            <Button
               onClick={handleAddStaff}
               className="bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-md"
             >
@@ -376,11 +373,10 @@ export function StaffManagement() {
                     <TableCell>
                       <Badge
                         variant={member.status === 'active' ? 'default' : 'secondary'}
-                        className={`rounded-lg ${
-                          member.status === 'active'
+                        className={`rounded-lg ${member.status === 'active'
                             ? 'bg-green-100 text-green-700 hover:bg-green-100'
                             : ''
-                        }`}
+                          }`}
                       >
                         {member.status === 'active' ? 'Active' : 'On Leave'}
                       </Badge>
