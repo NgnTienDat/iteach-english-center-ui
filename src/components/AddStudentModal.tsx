@@ -5,58 +5,45 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Plus, X } from 'lucide-react';
+import type { StudentCreatePayload } from '../types/user';
+import { useStudent } from '../hooks/useStudent';
 
-interface Student {
-  name: string;
-  class: string;
-  course: string;
-  email: string;
-  phone: string;
-  address: string;
-  enrollDate: string;
-  status: string;
-  parentName?: string;
-}
+
 
 interface AddStudentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (newStudent: Student) => void;
+  courses: { id: string; name: string }[];
 }
 
-export function AddStudentModal({ isOpen, onClose, onAdd }: AddStudentModalProps) {
-  const [formData, setFormData] = useState<Student>({
-    name: '',
-    class: '',
-    course: '',
+export function AddStudentModal({ isOpen, onClose, courses }: AddStudentModalProps) {
+  const { createStudentMutation } = useStudent();
+  const [formData, setFormData] = useState<StudentCreatePayload>({
+    fullName: '',
+    classId: '',
+    courseId: '',
     email: '',
-    phone: '',
-    address: '',
-    enrollDate: new Date().toISOString().split('T')[0],
+    phoneNumber: '',
     status: 'active',
-    parentName: '',
   });
 
-  // Reset form when modal closes
+
   useEffect(() => {
     if (!isOpen) {
       setFormData({
-        name: '',
-        class: '',
-        course: '',
+        fullName: '',
+        classId: '',
+        courseId: '',
         email: '',
-        phone: '',
-        address: '',
-        enrollDate: new Date().toISOString().split('T')[0],
+        phoneNumber: '',
         status: 'active',
-        parentName: '',
       });
     }
   }, [isOpen]);
 
   const handleAdd = () => {
     // Basic validation
-    if (!formData.name || !formData.email || !formData.phone || !formData.course || !formData.class) {
+    if (!formData.fullName || !formData.email || !formData.phoneNumber) {
       alert('Vui lòng điền đầy đủ thông tin bắt buộc');
       return;
     }
@@ -70,23 +57,25 @@ export function AddStudentModal({ isOpen, onClose, onAdd }: AddStudentModalProps
 
     // Phone validation
     const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) {
+    if (!phoneRegex.test(formData.phoneNumber.replace(/\s/g, ''))) {
       alert('Số điện thoại không hợp lệ (phải có 10 chữ số)');
       return;
     }
 
-    onAdd(formData);
-    onClose();
+    console.log('Submitting student data:', formData);
+
+    createStudentMutation.mutate(formData, {
+      onSuccess: () => {
+        alert("Tạo sinh viên thành công!");
+        onClose();
+      },
+      onError: (error: any) => {
+        alert(error.message || "Có lỗi xảy ra");
+      },
+    });
   };
 
-  const courseOptions = [
-    'IELTS Foundation',
-    'IELTS Advanced',
-    'TOEIC Advanced',
-    'Business English',
-    'General English',
-    'Kids English',
-  ];
+
 
   const classOptions = [
     'IELTS 6.5+ Morning',
@@ -116,8 +105,8 @@ export function AddStudentModal({ isOpen, onClose, onAdd }: AddStudentModalProps
               <Input
                 id="studentName"
                 placeholder="Nhập họ tên học viên"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                value={formData.fullName}
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
               />
             </div>
@@ -145,22 +134,13 @@ export function AddStudentModal({ isOpen, onClose, onAdd }: AddStudentModalProps
               <Input
                 id="studentPhone"
                 placeholder="0901234567"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                value={formData.phoneNumber}
+                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                 className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="studentParent">Tên phụ huynh</Label>
-              <Input
-                id="studentParent"
-                placeholder="Nhập tên phụ huynh"
-                value={formData.parentName}
-                onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
-                className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
-              />
-            </div>
+
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -168,17 +148,17 @@ export function AddStudentModal({ isOpen, onClose, onAdd }: AddStudentModalProps
               <Label htmlFor="studentCourse">
                 Khóa học <span className="text-red-500">*</span>
               </Label>
-              <Select 
-                value={formData.course} 
-                onValueChange={(value) => setFormData({ ...formData, course: value })}
+              <Select
+                value={formData.courseId}
+                onValueChange={(value) => setFormData({ ...formData, courseId: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
                   <SelectValue placeholder="Chọn khóa học" />
                 </SelectTrigger>
                 <SelectContent>
-                  {courseOptions.map((course) => (
-                    <SelectItem key={course} value={course}>
-                      {course}
+                  {courses.map((course) => (
+                    <SelectItem key={course.id} value={course.id}>
+                      {course.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -189,9 +169,9 @@ export function AddStudentModal({ isOpen, onClose, onAdd }: AddStudentModalProps
               <Label htmlFor="studentClass">
                 Lớp học <span className="text-red-500">*</span>
               </Label>
-              <Select 
-                value={formData.class} 
-                onValueChange={(value) => setFormData({ ...formData, class: value })}
+              <Select
+                value={formData.classId}
+                // onValueChange={(value) => setFormData({ ...formData, classId: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
                   <SelectValue placeholder="Chọn lớp học" />
@@ -207,7 +187,7 @@ export function AddStudentModal({ isOpen, onClose, onAdd }: AddStudentModalProps
             </div>
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="studentAddress">Địa chỉ</Label>
             <Input
               id="studentAddress"
@@ -216,10 +196,10 @@ export function AddStudentModal({ isOpen, onClose, onAdd }: AddStudentModalProps
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
               className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
             />
-          </div>
+          </div> */}
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="studentEnrollDate">
                 Ngày nhập học <span className="text-red-500">*</span>
               </Label>
@@ -230,20 +210,21 @@ export function AddStudentModal({ isOpen, onClose, onAdd }: AddStudentModalProps
                 onChange={(e) => setFormData({ ...formData, enrollDate: e.target.value })}
                 className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
               />
-            </div>
+            </div> */}
 
             <div className="space-y-2">
               <Label htmlFor="studentStatus">
                 Trạng thái <span className="text-red-500">*</span>
               </Label>
-              <Select 
-                value={formData.status} 
+              <Select
+                value={formData.status}
                 onValueChange={(value) => setFormData({ ...formData, status: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="progress">Chờ xếp lớp</SelectItem>
                   <SelectItem value="active">Đang học</SelectItem>
                   <SelectItem value="inactive">Tạm nghỉ</SelectItem>
                   <SelectItem value="graduated">Đã tốt nghiệp</SelectItem>
