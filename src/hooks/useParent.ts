@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createParentApi, getAllParentsApi } from "../services/userServices";
-import type { Parent, ParentFormData } from "../types/Parent";
+import { createParentApi, getAllParentsApi, updateParentApi } from "../services/userServices";
+import type { ParentFormData } from "../types/Parent";
 
 export function useParent() {
   const queryClient = useQueryClient();
@@ -16,10 +16,17 @@ export function useParent() {
   const createParentMutation = useMutation({
     mutationFn: (payload: Partial<ParentFormData>) => createParentApi(payload),
     onSuccess: () => {
-      // refresh danh sách parents
       queryClient.invalidateQueries({ queryKey: ["parents"] });
+      queryClient.invalidateQueries({ queryKey: ["studentsAvailable"] });
+    },
+  });
 
-      // refresh students list (vì khi tạo parent thì student sẽ gán vào parent)
+  // UPDATE parent
+  const updateParentMutation = useMutation({
+    mutationFn: ({ userId, payload }: { userId: string; payload: Partial<ParentFormData> }) =>
+      updateParentApi(userId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["parents"] });
       queryClient.invalidateQueries({ queryKey: ["studentsAvailable"] });
     },
   });
@@ -27,5 +34,6 @@ export function useParent() {
   return {
     parentsQuery,
     createParentMutation,
+    updateParentMutation,
   };
 }

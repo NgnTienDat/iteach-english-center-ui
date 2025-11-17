@@ -121,3 +121,24 @@ export async function getAllParentsApi(): Promise<Parent[]> {
         throw new Error("An unexpected error occurred while fetching parents.");
     }
 }
+
+export async function updateParentApi(userId: string, payload: Partial<ParentFormData>): Promise<void> {
+    try {
+        const res = await AUTH_REQUEST.patch(
+            endpoints.UPDATE_PARENT(userId),
+            payload
+        );
+        if (res.status !== 200) {
+            throw new Error(res.data?.message || "Updating parent failed");
+        }
+    } catch (error: unknown) {
+        if (error && typeof error === "object" && "response" in error) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            throw new Error(
+                axiosError.response?.data?.message ||
+                "An unexpected error occurred while updating parent."
+            );
+        }
+        throw new Error("An unexpected error occurred while updating parent.");
+    }
+}

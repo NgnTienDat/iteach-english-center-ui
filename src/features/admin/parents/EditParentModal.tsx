@@ -22,6 +22,8 @@ interface EditParentModalProps {
 export function EditParentModal({ isOpen, onClose, parent, isAddMode }: EditParentModalProps) {
   const { studentsAvailableQuery } = useStudent();
   const availableStudents = studentsAvailableQuery.data || [];
+  const parentId = parent?.id || "";
+  // console.log("parent id:", parent?.id);
 
   const {
     formData,
@@ -34,17 +36,14 @@ export function EditParentModal({ isOpen, onClose, parent, isAddMode }: EditPare
     resetForm,
   } = useParentForm({ parent });
 
-  const { createParentMutation } = useParent();
+  const { createParentMutation, updateParentMutation } = useParent();
 
   const handleSave = () => {
-    createParentMutation.mutate(
-      formData,
-      {
+    if (isAddMode) {
+      // CREATE parent
+      createParentMutation.mutate(formData, {
         onSuccess: () => {
-          toast.success(
-            isAddMode ? "Created parent successfully!" : "Updated parent successfully!"
-          );
-
+          toast.success("Created parent successfully!");
           resetForm();
           studentsAvailableQuery.refetch();
           onClose();
@@ -52,9 +51,26 @@ export function EditParentModal({ isOpen, onClose, parent, isAddMode }: EditPare
         onError: (error: any) => {
           toast.error(error?.message || "Something went wrong");
         },
-      }
-    );
+      });
+    } else {
+      // UPDATE parent
+      updateParentMutation.mutate(
+        { userId: parentId, payload: formData },
+        {
+          onSuccess: () => {
+            toast.success("Updated parent successfully!");
+            resetForm();
+            studentsAvailableQuery.refetch();
+            onClose();
+          },
+          onError: (error: any) => {
+            toast.error(error?.message || "Something went wrong");
+          },
+        }
+      );
+    }
   };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

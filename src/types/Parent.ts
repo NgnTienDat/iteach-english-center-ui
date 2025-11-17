@@ -1,16 +1,3 @@
-
-
-
-// export interface Parent {
-//     id: string;
-//     fullName: string;
-//     email: string;
-//     phoneNumber: string;
-//     relationName: string;
-//     linkedStudents: string[];
-//     active: boolean
-//     createdAt: string;
-// }
 export interface Parent {
   id: string;
   userCode: string;
