@@ -1,9 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
-import { Card } from './ui/card';
-import { X, Mail, Phone, Briefcase, MapPin, Users, Calendar } from 'lucide-react';
-import type { Parent } from '../features/admin/parents/ParentManagement';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
+import { Button } from '../../../components/ui/button';
+import { Badge } from '../../../components/ui/badge';
+import { Card } from '../../../components/ui/card';
+import { X, Mail, Phone,  Users, Calendar } from 'lucide-react';
+import type { Parent } from '../../../types/Parent';
+import { formatDate } from '../../../utils/helper';
 
 interface ParentDetailModalProps {
   isOpen: boolean;
@@ -23,21 +24,21 @@ export function ParentDetailModal({ isOpen, onClose, parent }: ParentDetailModal
 
         <div className="space-y-6 py-4">
           {/* Basic Information */}
-          <Card className="p-6 rounded-xl shadow-md bg-gradient-to-br from-blue-50 to-white">
+          <Card className="p-6 rounded-xl shadow-md bg-linear-to-br from-blue-50 to-white">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h3 className="text-gray-900 mb-1">{parent.name}</h3>
+                <h3 className="text-gray-900 mb-1">{parent.fullName}</h3>
                 <Badge
-                  className={`rounded-lg ${parent.status === 'active'
-                      ? 'bg-green-100 text-green-700 hover:bg-green-100'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-100'
+                  className={`rounded-lg ${parent.active 
+                    ? 'bg-green-100 text-green-700 hover:bg-green-100'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-100'
                     }`}
                 >
-                  {parent.status === 'active' ? 'Đang hoạt động' : 'Không hoạt động'}
+                  {parent.active ? 'Đang hoạt động' : 'Không hoạt động'}
                 </Badge>
               </div>
               <Badge className="bg-[#2563EB] text-white hover:bg-[#2563EB] rounded-lg px-3 py-1">
-                {parent.id}
+                {parent.userCode}
               </Badge>
             </div>
 
@@ -48,19 +49,11 @@ export function ParentDetailModal({ isOpen, onClose, parent }: ParentDetailModal
                 </div>
                 <div>
                   <p className="text-xs text-gray-500">Quan hệ</p>
-                  <p className="text-sm text-gray-900">{parent.relationship}</p>
+                  <p className="text-sm text-gray-900">{parent.relationName}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
-                  <Briefcase className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Nghề nghiệp</p>
-                  <p className="text-sm text-gray-900">{parent.occupation}</p>
-                </div>
-              </div>
+              
 
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
@@ -68,7 +61,7 @@ export function ParentDetailModal({ isOpen, onClose, parent }: ParentDetailModal
                 </div>
                 <div>
                   <p className="text-xs text-gray-500">Ngày đăng ký</p>
-                  <p className="text-sm text-gray-900">{parent.registrationDate}</p>
+                  <p className="text-sm text-gray-900">{formatDate(parent.createdAt)}</p>
                 </div>
               </div>
             </div>
@@ -94,19 +87,11 @@ export function ParentDetailModal({ isOpen, onClose, parent }: ParentDetailModal
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-gray-500">Số điện thoại</p>
-                  <p className="text-sm text-gray-900">{parent.phone}</p>
+                  <p className="text-sm text-gray-900">{parent.phoneNumber}</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-orange-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs text-gray-500">Địa chỉ</p>
-                  <p className="text-sm text-gray-900">{parent.address}</p>
-                </div>
-              </div>
+              
             </div>
           </Card>
 
@@ -121,9 +106,9 @@ export function ParentDetailModal({ isOpen, onClose, parent }: ParentDetailModal
 
             {parent.linkedStudents.length > 0 ? (
               <div className="space-y-3">
-                {parent.studentNames.map((studentName, index) => (
+                {parent.linkedStudents.map((student, index) => (
                   <div
-                    key={parent.linkedStudents[index]}
+                    key={student.id}
                     className="flex items-center justify-between p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors"
                   >
                     <div className="flex items-center gap-3">
@@ -131,9 +116,9 @@ export function ParentDetailModal({ isOpen, onClose, parent }: ParentDetailModal
                         <Users className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-sm text-gray-900">{studentName}</p>
+                        <p className="text-sm text-gray-900">{student.fullName}</p>
                         <p className="text-xs text-gray-500">
-                          Mã học viên: {parent.linkedStudents[index]}
+                          Mã học viên: {student.userCode}
                         </p>
                       </div>
                     </div>

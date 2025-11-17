@@ -10,8 +10,10 @@ import { Plus, Edit, Trash2, Search, Eye, User } from 'lucide-react';
 import { StudentDetailModal } from '../../../components/StudentDetailModal';
 import { EditStudentModal } from '../../../components/EditStudentModal';
 import { AddStudentModal } from '../../../components/AddStudentModal';
-import { ParentDetailModal } from '../../../components/ParentDetailModal';
+import { ParentDetailModal } from '../parents/ParentDetailModal';
 import type { Parent } from '../parents/ParentManagement';
+import { useCourse } from '../../../hooks/useCourse';
+
 
 interface Student {
   id: string;
@@ -195,6 +197,9 @@ const mockParents: { [key: string]: Parent } = {
 
 export function StudentManagement() {
   const [students, setStudents] = useState<Student[]>(mockStudents);
+  const { coursesQuery } = useCourse();
+  const courses = coursesQuery.data?.content || [];
+
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCourse, setFilterCourse] = useState('all');
   const [filterClass, setFilterClass] = useState('all');
@@ -231,16 +236,16 @@ export function StudentManagement() {
     setStudents(students.map((s) => (s.id === updatedStudent.id ? updatedStudent : s)));
   };
 
-  const handleAddStudent = (newStudent: Omit<Student, 'id' | 'averageScore' | 'scores'>) => {
-    const newId = `ST${String(students.length + 1).padStart(3, '0')}`;
-    const fullStudent: Student = {
-      ...newStudent,
-      id: newId,
-      averageScore: 0,
-      scores: [],
-    };
-    setStudents([...students, fullStudent]);
-  };
+  // const handleAddStudent = (newStudent: StudentCreatePayload) => {
+  //   const newId = `ST${String(students.length + 1).padStart(3, '0')}`;
+  //   const fullStudent: Student = {
+  //     ...newStudent,
+  //     id: newId,
+  //     averageScore: 0,
+  //     scores: [],
+  //   };
+  //   setStudents([...students, fullStudent]);
+  // };
 
   const handleDeleteStudent = (id: string) => {
     setStudents(students.filter((student) => student.id !== id));
@@ -434,6 +439,7 @@ export function StudentManagement() {
         isOpen={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}
         student={selectedStudent}
+        
       />
 
       <EditStudentModal
@@ -446,13 +452,15 @@ export function StudentManagement() {
       <AddStudentModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        onAdd={handleAddStudent}
+        // onAdd={handleAddStudent}
+        courses={courses}
       />
 
       <ParentDetailModal
         isOpen={isParentModalOpen}
         onClose={() => setIsParentModalOpen(false)}
         parent={selectedParent}
+        
       />
     </div>
   );

@@ -67,6 +67,7 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
       return;
     }
 
+    console.log('Adding class with data:', formData);
     onAdd(formData);
     onClose();
   };

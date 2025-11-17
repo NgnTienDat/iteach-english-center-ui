@@ -12,6 +12,7 @@ import { AddClassModal } from './AddClassModal';
 import { useCourse } from '../../../hooks/useCourse';
 import type { Course } from '../../../types/course';
 import { useUser } from '../../../hooks/useUser';
+import { useClass } from '../../../hooks/useClass';
 
 interface Class {
   id: string;
@@ -46,8 +47,11 @@ export function CourseManagement() {
 
   const { users } = useUser('teacher');
   const { coursesQuery, deleteCourseMutation } = useCourse();
+  const { classesQuery} = useClass();
+  console.log('Classes:', classesQuery.data);
 
   const courses = coursesQuery.data?.content || [];
+  const classes = classesQuery.data?.content || [];
 
   // Filter courses search
   const filteredCourses = courses.filter(
@@ -57,7 +61,7 @@ export function CourseManagement() {
   );
 
   // Filter classes search
-  const filteredClasses = mockClasses.filter(
+  const filteredClasses = classes.filter(
     (cls) =>
       cls.name.toLowerCase().includes(searchClass.toLowerCase()) ||
       cls.id.toLowerCase().includes(searchClass.toLowerCase())
@@ -74,10 +78,10 @@ export function CourseManagement() {
     }
   };
 
-  const handleEditClass = (cls: Class) => {
-    setEditingClass(cls);
-    setIsEditClassModalOpen(true);
-  };
+  // const handleEditClass = (cls: Class) => {
+  //   setEditingClass(cls);
+  //   setIsEditClassModalOpen(true);
+  // };
 
   const handleDeleteClass = (id: string) => {
     console.log('Delete class id', id);
@@ -234,24 +238,24 @@ export function CourseManagement() {
               <TableBody>
                 {filteredClasses.map((cls) => (
                   <TableRow key={cls.id}>
-                    <TableCell>{cls.id}</TableCell>
+                    <TableCell>{cls.classCode}</TableCell>
                     <TableCell>{cls.name}</TableCell>
-                    <TableCell className="text-sm">{cls.course}</TableCell>
-                    <TableCell>{cls.students}</TableCell>
+                    <TableCell className="text-sm">{cls.courseName}</TableCell>
+                    <TableCell>{cls.numberOfStudents}</TableCell>
                     <TableCell className="text-sm">{cls.startDate}</TableCell>
                     <TableCell className="text-sm">{cls.endDate}</TableCell>
                     <TableCell>
                       <Badge
-                        className={`rounded-lg ${cls.status === 'active'
+                        className={`rounded-lg ${cls.active === true
                           ? 'bg-green-100 text-green-700 hover:bg-green-100'
-                          : cls.status === 'completed'
+                          : cls.active === false
                             ? 'bg-blue-100 text-blue-700 hover:bg-blue-100'
                             : ''
                           }`}
                       >
-                        {cls.status === 'active'
+                        {cls.active === true
                           ? 'In Progress'
-                          : cls.status === 'completed'
+                          : cls.active === false
                             ? 'Completed'
                             : 'Not Started'}
                       </Badge>
@@ -261,7 +265,7 @@ export function CourseManagement() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleEditClass(cls)}
+                          // onClick={() => handleEditClass(cls)}
                           className="rounded-xl hover:bg-blue-50 hover:border-[#2563EB] hover:text-[#2563EB] transition-colors"
                         >
                           <Edit className="w-4 h-4 mr-1.5" />
