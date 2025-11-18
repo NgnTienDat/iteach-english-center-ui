@@ -11,6 +11,7 @@ export interface ClassResponse {
     endDate: string;     // ISO date string
     active: boolean;
     numberOfStudents: number;
+    totalNumberOfStudents: number;
     createdAt: string;   // ISO timestamp
 }
 
@@ -22,7 +23,7 @@ export interface ClassCreateRequest {
     schedule: string;
     startDate: string;   // ISO date string (YYYY-MM-DD)
     endDate: string;     // ISO date string
-    numberOfStudents: number;
+    totalNumberOfStudents: number;
 }
 
 export interface ClassPage {

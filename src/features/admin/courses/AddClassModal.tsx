@@ -5,36 +5,31 @@ import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { Plus, X } from 'lucide-react';
+import type { User } from '../../../types/user';
+import type { Course } from '../../../types/course';
+import type { ClassCreateRequest } from '../../../types/class';
+import { useClass } from '../../../hooks/useClass';
+import { toast } from 'react-toastify';
 
-interface Class {
-  name: string;
-  course: string;
-  students: number;
-  startDate: string;
-  endDate: string;
-  status: string;
-  schedule?: string;
-  teacher?: string;
-  room?: string;
-}
+
 
 interface AddClassModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (newClass: Class) => void;
+  teachers: User[] | [];
+  courses: Course[] | [];
 }
 
-export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
-  const [formData, setFormData] = useState<Class>({
+export function AddClassModal({ isOpen, onClose, teachers, courses: courseOptions }: AddClassModalProps) {
+  const { createClassMutation } = useClass();
+  const [formData, setFormData] = useState<Partial<ClassCreateRequest>>({
     name: '',
-    course: '',
-    students: 0,
+    courseId: '',
+    totalNumberOfStudents: 0,
     startDate: '',
     endDate: '',
-    status: 'active',
     schedule: '',
-    teacher: '',
-    room: '',
+    teacherId: '',
   });
 
   // Reset form when modal closes
@@ -42,21 +37,19 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
     if (!isOpen) {
       setFormData({
         name: '',
-        course: '',
-        students: 0,
+        courseId: '',
+        totalNumberOfStudents: 0,
         startDate: '',
         endDate: '',
-        status: 'active',
         schedule: '',
-        teacher: '',
-        room: '',
+        teacherId: '',
       });
     }
   }, [isOpen]);
 
   const handleAdd = () => {
     // Basic validation
-    if (!formData.name || !formData.course || !formData.startDate || !formData.endDate) {
+    if (!formData.name || !formData.courseId || !formData.startDate || !formData.endDate) {
       alert('Vui lòng điền đầy đủ thông tin bắt buộc');
       return;
     }
@@ -68,26 +61,28 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
     }
 
     console.log('Adding class with data:', formData);
-    onAdd(formData);
-    onClose();
+    createClassMutation.mutate(formData as ClassCreateRequest, {
+      onSuccess: () => {
+        toast.success("Created class successfully!");
+        setFormData({
+          name: '',
+          courseId: '',
+          totalNumberOfStudents: 0,
+          startDate: '',
+          endDate: '',
+          schedule: '',
+          teacherId: '',
+        });
+        onClose();
+      },
+      onError: (error: any) => {
+        toast.error(error?.message || "Something went wrong");
+        onClose();
+      },
+    });
   };
 
-  const courseOptions = [
-    'IELTS Foundation',
-    'IELTS Advanced',
-    'TOEIC Advanced',
-    'Business English',
-    'General English',
-    'Kids English',
-  ];
 
-  const teacherOptions = [
-    'Ms. Sarah Johnson',
-    'Mr. David Lee',
-    'Ms. Emma Wilson',
-    'Ms. Linda Brown',
-    'Mr. John Smith',
-  ];
 
   const scheduleOptions = [
     'Thứ 2, 4, 6 (Sáng 8h-10h)',
@@ -99,15 +94,7 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
     'Thứ 7, Chủ nhật (Sáng 8h-12h)',
   ];
 
-  const roomOptions = [
-    'Phòng A101',
-    'Phòng A102',
-    'Phòng A201',
-    'Phòng A202',
-    'Phòng B101',
-    'Phòng B102',
-    'Phòng C101',
-  ];
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -136,16 +123,16 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
                 Khóa học <span className="text-red-500">*</span>
               </Label>
               <Select
-                value={formData.course}
-                onValueChange={(value) => setFormData({ ...formData, course: value })}
+                value={formData.courseId}
+                onValueChange={(value) => setFormData({ ...formData, courseId: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
                   <SelectValue placeholder="Chọn khóa học" />
                 </SelectTrigger>
                 <SelectContent>
                   {courseOptions.map((course) => (
-                    <SelectItem key={course} value={course}>
-                      {course}
+                    <SelectItem key={course.id} value={course.id}>
+                      {course.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -157,35 +144,36 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
             <div className="space-y-2">
               <Label htmlFor="classTeacher">Giảng viên</Label>
               <Select
-                value={formData.teacher}
-                onValueChange={(value) => setFormData({ ...formData, teacher: value })}
+                value={formData.teacherId}
+                onValueChange={(value) => setFormData({ ...formData, teacherId: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
                   <SelectValue placeholder="Chọn giảng viên" />
                 </SelectTrigger>
                 <SelectContent>
-                  {teacherOptions.map((teacher) => (
-                    <SelectItem key={teacher} value={teacher}>
-                      {teacher}
+                  {teachers.map((teacher) => (
+                    <SelectItem key={teacher.id} value={teacher.id}>
+                      {teacher.fullName}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
+
 
             <div className="space-y-2">
-              <Label htmlFor="classRoom">Phòng học</Label>
+              <Label htmlFor="classSchedule">Lịch học</Label>
               <Select
-                value={formData.room}
-                onValueChange={(value) => setFormData({ ...formData, room: value })}
+                value={formData.schedule}
+                onValueChange={(value) => setFormData({ ...formData, schedule: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
-                  <SelectValue placeholder="Chọn phòng học" />
+                  <SelectValue placeholder="Chọn lịch học" />
                 </SelectTrigger>
                 <SelectContent>
-                  {roomOptions.map((room) => (
-                    <SelectItem key={room} value={room}>
-                      {room}
+                  {scheduleOptions.map((schedule) => (
+                    <SelectItem key={schedule} value={schedule}>
+                      {schedule}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -193,24 +181,6 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="classSchedule">Lịch học</Label>
-            <Select
-              value={formData.schedule}
-              onValueChange={(value) => setFormData({ ...formData, schedule: value })}
-            >
-              <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
-                <SelectValue placeholder="Chọn lịch học" />
-              </SelectTrigger>
-              <SelectContent>
-                {scheduleOptions.map((schedule) => (
-                  <SelectItem key={schedule} value={schedule}>
-                    {schedule}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -248,18 +218,18 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
                 type="number"
                 min="0"
                 placeholder="0"
-                value={formData.students || ''}
-                onChange={(e) => setFormData({ ...formData, students: parseInt(e.target.value) || 0 })}
+                value={formData.totalNumberOfStudents || ''}
+                onChange={(e) => setFormData({ ...formData, totalNumberOfStudents: parseInt(e.target.value) || 0 })}
                 className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
               />
             </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="classStatus">
                 Trạng thái <span className="text-red-500">*</span>
               </Label>
               <Select
-                value={formData.status}
+                value={formData.}
                 onValueChange={(value) => setFormData({ ...formData, status: value })}
               >
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
@@ -271,7 +241,7 @@ export function AddClassModal({ isOpen, onClose, onAdd }: AddClassModalProps) {
                   <SelectItem value="completed">Đã kết thúc</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
           </div>
 
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-4">
