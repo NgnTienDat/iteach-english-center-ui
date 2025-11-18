@@ -5,26 +5,21 @@ import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { Save, X } from 'lucide-react';
+import type { ClassResponse } from '../../../types/class';
+import type { Course } from '../../../types/course';
+import { useClass } from '../../../hooks/useClass';
 
-interface Class {
-  id: string;
-  name: string;
-  course: string;
-  students: number;
-  startDate: string;
-  endDate: string;
-  status: string;
-}
 
 interface EditClassModalProps {
   isOpen: boolean;
   onClose: () => void;
-  classData: Class | null;
-  onSave: (updatedClass: Class) => void;
+  classData: ClassResponse | null;
+  courses: Course[] | [];
 }
 
-export function EditClassModal({ isOpen, onClose, classData, onSave }: EditClassModalProps) {
-  const [formData, setFormData] = useState<Class | null>(null);
+export function EditClassModal({ isOpen, onClose, classData, courses }: EditClassModalProps) {
+  const [formData, setFormData] = useState<ClassResponse | null>(null);
+  const { updateClassMutation } = useClass();
 
   useEffect(() => {
     if (classData) {
@@ -35,7 +30,8 @@ export function EditClassModal({ isOpen, onClose, classData, onSave }: EditClass
   if (!formData) return null;
 
   const handleSave = () => {
-    onSave(formData);
+    updateClassMutation.mutate({ classId: formData.id, payload: formData })
+    console.log("form data:", formData);
     onClose();
   };
 
@@ -51,7 +47,7 @@ export function EditClassModal({ isOpen, onClose, classData, onSave }: EditClass
             <Label htmlFor="classId">Mã lớp học</Label>
             <Input
               id="classId"
-              value={formData.id}
+              value={formData.classCode}
               disabled
               className="rounded-xl border-gray-300 bg-gray-50"
             />
@@ -69,17 +65,20 @@ export function EditClassModal({ isOpen, onClose, classData, onSave }: EditClass
 
           <div className="space-y-2">
             <Label htmlFor="classCourse">Khóa học *</Label>
-            <Select value={formData.course} onValueChange={(value) => setFormData({ ...formData, course: value })}>
+            <Select
+              value={formData.courseId}
+              onValueChange={(value) => setFormData({ ...formData, courseId: value })}
+            >
               <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
-                <SelectValue />
+                <SelectValue placeholder="Chọn khóa học"/>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="IELTS Foundation">IELTS Foundation</SelectItem>
-                <SelectItem value="IELTS Advanced">IELTS Advanced</SelectItem>
-                <SelectItem value="TOEIC Advanced">TOEIC Advanced</SelectItem>
-                <SelectItem value="Business English">Business English</SelectItem>
-                <SelectItem value="General English">General English</SelectItem>
-              </SelectContent>
+                  {courses.map((course) => (
+                    <SelectItem key={course.id} value={course.id}>
+                      {course.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
             </Select>
           </div>
 
@@ -88,8 +87,8 @@ export function EditClassModal({ isOpen, onClose, classData, onSave }: EditClass
             <Input
               id="classStudents"
               type="number"
-              value={formData.students}
-              onChange={(e) => setFormData({ ...formData, students: parseInt(e.target.value) || 0 })}
+              value={formData.numberOfStudents}
+              onChange={(e) => setFormData({ ...formData, numberOfStudents: parseInt(e.target.value) || 0 })}
               className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
             />
           </div>
@@ -116,9 +115,9 @@ export function EditClassModal({ isOpen, onClose, classData, onSave }: EditClass
             </div>
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="classStatus">Trạng thái *</Label>
-            <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+            <Select value={formData.active} onValueChange={(value) => setFormData({ ...formData, active: value })}>
               <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
                 <SelectValue />
               </SelectTrigger>
@@ -128,7 +127,7 @@ export function EditClassModal({ isOpen, onClose, classData, onSave }: EditClass
                 <SelectItem value="upcoming">Chưa bắt đầu</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex justify-end gap-3 pt-4 border-t">

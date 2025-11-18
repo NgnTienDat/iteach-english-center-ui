@@ -13,6 +13,7 @@ import { useCourse } from '../../../hooks/useCourse';
 import type { Course } from '../../../types/course';
 import { useUser } from '../../../hooks/useUser';
 import { useClass } from '../../../hooks/useClass';
+import type { ClassResponse } from '../../../types/class';
 
 interface Class {
   id: string;
@@ -24,21 +25,14 @@ interface Class {
   status: string;
 }
 
-// Giữ nguyên mock classes
-const mockClasses: Class[] = [
-  { id: 'CL001', name: 'IELTS 6.5+ Morning', course: 'IELTS Foundation', students: 15, startDate: '02/01/2025', endDate: '05/01/2025', status: 'active' },
-  { id: 'CL002', name: 'TOEIC 750+ Evening', course: 'TOEIC Advanced', students: 20, startDate: '01/15/2025', endDate: '03/15/2025', status: 'active' },
-  { id: 'CL003', name: 'Business English Pro', course: 'Business English', students: 12, startDate: '03/01/2025', endDate: '06/01/2025', status: 'active' },
-  { id: 'CL004', name: 'IELTS Advanced', course: 'IELTS Advanced', students: 18, startDate: '02/10/2025', endDate: '06/10/2025', status: 'active' },
-  { id: 'CL005', name: 'General English Morning', course: 'General English', students: 25, startDate: '01/01/2025', endDate: '07/01/2025', status: 'completed' },
-];
+
 
 export function CourseManagement() {
   const [activeView, setActiveView] = useState<'courses' | 'classes'>('courses');
   const [searchCourse, setSearchCourse] = useState('');
   const [searchClass, setSearchClass] = useState('');
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
-  const [editingClass, setEditingClass] = useState<Class | null>(null);
+  const [editingClass, setEditingClass] = useState<ClassResponse | null>(null);
   const [isEditCourseModalOpen, setIsEditCourseModalOpen] = useState(false);
   const [isEditClassModalOpen, setIsEditClassModalOpen] = useState(false);
   const [isAddCourseModalOpen, setIsAddCourseModalOpen] = useState(false);
@@ -47,20 +41,17 @@ export function CourseManagement() {
 
   const { users } = useUser('teacher');
   const { coursesQuery, deleteCourseMutation } = useCourse();
-  const { classesQuery} = useClass();
-  console.log('Classes:', classesQuery.data);
+  const { classesQuery } = useClass();
 
   const courses = coursesQuery.data?.content || [];
   const classes = classesQuery.data?.content || [];
 
-  // Filter courses search
   const filteredCourses = courses.filter(
     (course) =>
       course.name.toLowerCase().includes(searchCourse.toLowerCase()) ||
       course.id.toLowerCase().includes(searchCourse.toLowerCase())
   );
 
-  // Filter classes search
   const filteredClasses = classes.filter(
     (cls) =>
       cls.name.toLowerCase().includes(searchClass.toLowerCase()) ||
@@ -78,10 +69,10 @@ export function CourseManagement() {
     }
   };
 
-  // const handleEditClass = (cls: Class) => {
-  //   setEditingClass(cls);
-  //   setIsEditClassModalOpen(true);
-  // };
+  const handleEditClass = (cls: ClassResponse) => {
+    setEditingClass(cls);
+    setIsEditClassModalOpen(true);
+  };
 
   const handleDeleteClass = (id: string) => {
     console.log('Delete class id', id);
@@ -241,7 +232,22 @@ export function CourseManagement() {
                     <TableCell>{cls.classCode}</TableCell>
                     <TableCell>{cls.name}</TableCell>
                     <TableCell className="text-sm">{cls.courseName}</TableCell>
-                    <TableCell>{cls.numberOfStudents}</TableCell>
+                    <TableCell className="font-medium">
+                      <span
+                        className={`px-2 py-1 rounded-lg text-sm font-semibold
+                            ${cls.numberOfStudents === cls.totalNumberOfStudents
+                            ? "bg-green-100 text-green-700"
+                            : cls.numberOfStudents === 0
+                              ? "bg-red-100 text-red-700"
+                              : "bg-blue-100 text-blue-700"
+                          }`}
+                      >
+                        {cls.numberOfStudents}
+                      </span>
+
+                      <span className="text-gray-500 ml-1">/ {cls.totalNumberOfStudents}</span>
+                    </TableCell>
+
                     <TableCell className="text-sm">{cls.startDate}</TableCell>
                     <TableCell className="text-sm">{cls.endDate}</TableCell>
                     <TableCell>
@@ -265,7 +271,7 @@ export function CourseManagement() {
                         <Button
                           variant="outline"
                           size="sm"
-                          // onClick={() => handleEditClass(cls)}
+                          onClick={() => handleEditClass(cls)}
                           className="rounded-xl hover:bg-blue-50 hover:border-[#2563EB] hover:text-[#2563EB] transition-colors"
                         >
                           <Edit className="w-4 h-4 mr-1.5" />
@@ -302,7 +308,7 @@ export function CourseManagement() {
         isOpen={isEditClassModalOpen}
         onClose={() => setIsEditClassModalOpen(false)}
         classData={editingClass}
-        onSave={(updated) => console.log('Save class', updated)}
+        courses={courses ?? []}
       />
 
       <AddCourseModal
@@ -315,7 +321,8 @@ export function CourseManagement() {
       <AddClassModal
         isOpen={isAddClassModalOpen}
         onClose={() => setIsAddClassModalOpen(false)}
-        onAdd={(newClass) => console.log('Add class', newClass)}
+        teachers={users ?? []}
+        courses={courses ?? []}
       />
     </div>
   );

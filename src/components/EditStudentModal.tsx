@@ -5,30 +5,29 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Save, X } from 'lucide-react';
+import { formatDate } from '../utils/helper';
 
 interface Student {
   id: string;
   name: string;
   class: string;
   course: string;
-  averageScore: number;
   status: string;
   email: string;
   phone: string;
-  address: string;
   enrollDate: string;
-  scores: { subject: string; score: number; date: string }[];
 }
 
 interface EditStudentModalProps {
   isOpen: boolean;
   onClose: () => void;
   student: Student | null;
-  onSave: (updatedStudent: Student) => void;
 }
 
-export function EditStudentModal({ isOpen, onClose, student, onSave }: EditStudentModalProps) {
+export function EditStudentModal({ isOpen, onClose, student }: EditStudentModalProps) {
   const [formData, setFormData] = useState<Student | null>(null);
+
+  console.log(student)
 
   useEffect(() => {
     if (student) {
@@ -39,7 +38,6 @@ export function EditStudentModal({ isOpen, onClose, student, onSave }: EditStude
   if (!formData) return null;
 
   const handleSave = () => {
-    onSave(formData);
     onClose();
   };
 
@@ -56,7 +54,7 @@ export function EditStudentModal({ isOpen, onClose, student, onSave }: EditStude
               <Label htmlFor="studentId">Mã học viên</Label>
               <Input
                 id="studentId"
-                value={formData.id}
+                value={student.userCode}
                 disabled
                 className="rounded-xl border-gray-300 bg-gray-50"
               />
@@ -66,8 +64,8 @@ export function EditStudentModal({ isOpen, onClose, student, onSave }: EditStude
               <Label htmlFor="studentName">Họ tên *</Label>
               <Input
                 id="studentName"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                value={formData.fullName}
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
               />
             </div>
@@ -87,8 +85,8 @@ export function EditStudentModal({ isOpen, onClose, student, onSave }: EditStude
               <Label htmlFor="studentPhone">Số điện thoại *</Label>
               <Input
                 id="studentPhone"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                value={formData.phoneNumber}
+                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                 className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
               />
             </div>
@@ -125,19 +123,11 @@ export function EditStudentModal({ isOpen, onClose, student, onSave }: EditStude
               </Select>
             </div>
 
-            <div className="col-span-2 space-y-2">
-              <Label htmlFor="studentAddress">Địa chỉ</Label>
-              <Input
-                id="studentAddress"
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
-              />
-            </div>
+           
 
             <div className="space-y-2">
               <Label htmlFor="studentStatus">Trạng thái *</Label>
-              <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+              <Select  value={formData?.active ? "active" : "inactive"} onValueChange={(value) => setFormData({ ...formData, active: value==='active' })}>
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
                   <SelectValue />
                 </SelectTrigger>
@@ -152,8 +142,8 @@ export function EditStudentModal({ isOpen, onClose, student, onSave }: EditStude
               <Label htmlFor="studentEnrollDate">Ngày đăng ký</Label>
               <Input
                 id="studentEnrollDate"
-                value={formData.enrollDate}
-                onChange={(e) => setFormData({ ...formData, enrollDate: e.target.value })}
+                value={formatDate(formData.createdAt)}
+                readOnly={true}
                 className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
               />
             </div>

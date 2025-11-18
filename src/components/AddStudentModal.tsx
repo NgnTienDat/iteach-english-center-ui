@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Plus, X } from 'lucide-react';
 import type { StudentCreatePayload } from '../types/user';
 import { useStudent } from '../hooks/useStudent';
+import { useClass } from '../hooks/useClass';
+import { toast } from 'react-toastify';
 
 
 
@@ -26,6 +28,7 @@ export function AddStudentModal({ isOpen, onClose, courses }: AddStudentModalPro
     phoneNumber: '',
     status: 'active',
   });
+  const { classByCourseQuery } = useClass({ courseId: formData.courseId });
 
 
   useEffect(() => {
@@ -66,7 +69,7 @@ export function AddStudentModal({ isOpen, onClose, courses }: AddStudentModalPro
 
     createStudentMutation.mutate(formData, {
       onSuccess: () => {
-        alert("Tạo sinh viên thành công!");
+        toast.success("Thêm học viên mới thành công!")
         onClose();
       },
       onError: (error: any) => {
@@ -75,19 +78,7 @@ export function AddStudentModal({ isOpen, onClose, courses }: AddStudentModalPro
     });
   };
 
-
-
-  const classOptions = [
-    'IELTS 6.5+ Morning',
-    'IELTS 6.5+ Evening',
-    'IELTS Advanced',
-    'TOEIC 750+ Evening',
-    'TOEIC 850+ Morning',
-    'Business English Pro',
-    'General English Morning',
-    'General English Evening',
-    'Kids Beginner',
-  ];
+  const classes = classByCourseQuery.data || [];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -140,78 +131,6 @@ export function AddStudentModal({ isOpen, onClose, courses }: AddStudentModalPro
               />
             </div>
 
-
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="studentCourse">
-                Khóa học <span className="text-red-500">*</span>
-              </Label>
-              <Select
-                value={formData.courseId}
-                onValueChange={(value) => setFormData({ ...formData, courseId: value })}
-              >
-                <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
-                  <SelectValue placeholder="Chọn khóa học" />
-                </SelectTrigger>
-                <SelectContent>
-                  {courses.map((course) => (
-                    <SelectItem key={course.id} value={course.id}>
-                      {course.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="studentClass">
-                Lớp học <span className="text-red-500">*</span>
-              </Label>
-              <Select
-                value={formData.classId}
-                // onValueChange={(value) => setFormData({ ...formData, classId: value })}
-              >
-                <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
-                  <SelectValue placeholder="Chọn lớp học" />
-                </SelectTrigger>
-                <SelectContent>
-                  {classOptions.map((classItem) => (
-                    <SelectItem key={classItem} value={classItem}>
-                      {classItem}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* <div className="space-y-2">
-            <Label htmlFor="studentAddress">Địa chỉ</Label>
-            <Input
-              id="studentAddress"
-              placeholder="Nhập địa chỉ"
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
-            />
-          </div> */}
-
-          <div className="grid grid-cols-2 gap-4">
-            {/* <div className="space-y-2">
-              <Label htmlFor="studentEnrollDate">
-                Ngày nhập học <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="studentEnrollDate"
-                type="date"
-                value={formData.enrollDate}
-                onChange={(e) => setFormData({ ...formData, enrollDate: e.target.value })}
-                className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
-              />
-            </div> */}
-
             <div className="space-y-2">
               <Label htmlFor="studentStatus">
                 Trạng thái <span className="text-red-500">*</span>
@@ -231,6 +150,89 @@ export function AddStudentModal({ isOpen, onClose, courses }: AddStudentModalPro
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="studentCourse">
+                Khóa học <span className="text-red-500">*</span>
+              </Label>
+              <Select
+                value={formData.courseId}
+                onValueChange={(value) => {
+                  setFormData({
+                    ...formData,
+                    courseId: value,
+                    classId: "" // reset classId khi đổi courseId
+                  });
+                }}
+              >
+                <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md">
+                  <SelectValue placeholder="Chọn khóa học" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {courses.map((course) => (
+                    <SelectItem key={course.id} value={course.id}>
+                      {course.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="studentClass">
+                Lớp học <span className="text-red-500">*</span>
+              </Label>
+              <Select
+                value={formData.classId}
+                onValueChange={(value) => setFormData({ ...formData, classId: value })}
+                disabled={!formData.courseId || classByCourseQuery.isLoading}
+              >
+                <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md">
+                  <SelectValue
+                    placeholder={
+                      !formData.courseId
+                        ? "Chọn khóa học trước"
+                        : classByCourseQuery.isLoading
+                          ? "Đang tải..."
+                          : "Chọn lớp học"
+                    }
+                  />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {classByCourseQuery.isLoading ? (
+                    <div className="p-2 text-sm">Đang tải lớp...</div>
+                  ) : classes.length === 0 ? (
+                    <div className="p-2 text-sm">Không có lớp nào</div>
+                  ) : (
+                    classes.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {/* <div className="space-y-2">
+              <Label htmlFor="studentEnrollDate">
+                Ngày nhập học <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="studentEnrollDate"
+                type="date"
+                value={formData.enrollDate}
+                onChange={(e) => setFormData({ ...formData, enrollDate: e.target.value })}
+                className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
+              />
+            </div> */}
+
+
           </div>
 
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-4">

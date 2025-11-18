@@ -1,5 +1,5 @@
 import type { Parent, ParentFormData } from "../types/Parent";
-import type { StudentCreatePayload, User } from "../types/user";
+import type { StudentCreatePayload, StudentDetail, StudentParams, StudentResponse, User } from "../types/user";
 import { AUTH_REQUEST } from "../utils/axiosConfig";
 import { endpoints } from "../utils/endPoint";
 import type { AxiosResponse } from "axios";
@@ -14,6 +14,7 @@ export interface ApiResponse<T> {
     message: string;
     result: T;
 }
+
 
 
 export async function getAllUsersApi(role?: string): Promise<User[]> {
@@ -36,6 +37,34 @@ export async function getAllUsersApi(role?: string): Promise<User[]> {
             throw new Error(
                 axiosError.response?.data?.message ||
                 "An unexpected error occurred while fetching users."
+            );
+        }
+
+        throw new Error("An unexpected error occurred while fetching users.");
+    }
+}
+
+
+export async function getAllStudentsApi(params: Partial<StudentParams>): Promise<StudentResponse[]> {
+    try {
+        const res: AxiosResponse<ApiResponse<StudentResponse[]>> = await AUTH_REQUEST.get(
+            endpoints.ALL_STUDENTS,
+            {
+                params: params,
+            }
+        );
+
+        if (res.status !== 200 || res.data.code !== 200) {
+            throw new Error(res.data?.message || "Fetching students failed");
+        }
+
+        return res.data.result;
+    } catch (error: unknown) {
+        if (error && typeof error === "object" && "response" in error) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            throw new Error(
+                axiosError.response?.data?.message ||
+                "An unexpected error occurred while fetching students."
             );
         }
 
@@ -140,5 +169,27 @@ export async function updateParentApi(userId: string, payload: Partial<ParentFor
             );
         }
         throw new Error("An unexpected error occurred while updating parent.");
+    }
+}
+
+
+export async function getStudentDetailApi(userId: string): Promise<StudentDetail> {
+    try {
+        const res = await AUTH_REQUEST.get(
+            endpoints.STUDENT_DETAIL(userId)
+        );
+        if (res.status !== 200) {
+            throw new Error(res.data?.message || "Fetching student detail failed");
+        }
+        return res.data.result;
+    } catch (error: unknown) {
+        if (error && typeof error === "object" && "response" in error) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            throw new Error(
+                axiosError.response?.data?.message ||
+                "An unexpected error occurred while Fetching student detail."
+            );
+        }
+        throw new Error("An unexpected error occurred while Fetching student detail.");
     }
 }
