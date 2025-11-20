@@ -1,31 +1,26 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
+import { Label } from '../../../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { Save, X } from 'lucide-react';
-import { formatDate } from '../utils/helper';
+import { formatDate } from '../../../utils/helper';
+import type { StudentResponse } from '../../../types/user';
+import { useStudent } from '../../../hooks/useStudent';
+import { toast } from 'react-toastify';
 
-interface Student {
-  id: string;
-  name: string;
-  class: string;
-  course: string;
-  status: string;
-  email: string;
-  phone: string;
-  enrollDate: string;
-}
+
 
 interface EditStudentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  student: Student | null;
+  student: StudentResponse | null;
 }
 
 export function EditStudentModal({ isOpen, onClose, student }: EditStudentModalProps) {
-  const [formData, setFormData] = useState<Student | null>(null);
+  const [formData, setFormData] = useState<StudentResponse | null>(null);
+  const { updateStudentMutation } = useStudent();
 
   console.log(student)
 
@@ -38,6 +33,24 @@ export function EditStudentModal({ isOpen, onClose, student }: EditStudentModalP
   if (!formData) return null;
 
   const handleSave = () => {
+    const updatePayload = {
+      id: formData.id,
+      fullName: formData.fullName,
+      email: formData.email,
+      phoneNumber: formData.phoneNumber,
+      active: formData.active,
+    };
+    updateStudentMutation.mutate({ userId: formData.id, payload: updatePayload },
+      {
+        onSuccess: () => {
+          toast.success("Updated student successfully!");
+          onClose();
+        },
+        onError: (error: any) => {
+          toast.error(error?.message || "Something went wrong");
+        },
+      }
+    );
     onClose();
   };
 
@@ -54,7 +67,7 @@ export function EditStudentModal({ isOpen, onClose, student }: EditStudentModalP
               <Label htmlFor="studentId">Mã học viên</Label>
               <Input
                 id="studentId"
-                value={student.userCode}
+                value={student?.userCode}
                 disabled
                 className="rounded-xl border-gray-300 bg-gray-50"
               />
@@ -91,7 +104,7 @@ export function EditStudentModal({ isOpen, onClose, student }: EditStudentModalP
               />
             </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="studentCourse">Khóa học *</Label>
               <Select value={formData.course} onValueChange={(value) => setFormData({ ...formData, course: value })}>
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
@@ -121,13 +134,13 @@ export function EditStudentModal({ isOpen, onClose, student }: EditStudentModalP
                   <SelectItem value="General English">General English</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
 
-           
+
 
             <div className="space-y-2">
               <Label htmlFor="studentStatus">Trạng thái *</Label>
-              <Select  value={formData?.active ? "active" : "inactive"} onValueChange={(value) => setFormData({ ...formData, active: value==='active' })}>
+              <Select value={formData?.active ? "active" : "inactive"} onValueChange={(value) => setFormData({ ...formData, active: value === 'active' })}>
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
                   <SelectValue />
                 </SelectTrigger>

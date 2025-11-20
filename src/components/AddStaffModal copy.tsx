@@ -19,11 +19,10 @@ interface Staff {
 interface AddStaffModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (newStaff: Staff) => void;
   type: 'teacher' | 'staff';
 }
 
-export function AddStaffModal({ isOpen, onClose, onAdd, type }: AddStaffModalProps) {
+export function AddStaffModal({ isOpen, onClose, type }: AddStaffModalProps) {
   const [formData, setFormData] = useState<Staff>({
     name: '',
     position: '',
@@ -63,7 +62,7 @@ export function AddStaffModal({ isOpen, onClose, onAdd, type }: AddStaffModalPro
       return;
     }
 
-    onAdd(formData);
+
     onClose();
   };
 
