@@ -8,9 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Plus, Edit, Trash2, Search, Eye, User } from 'lucide-react';
 
 // Import Components
-import { StudentDetailModal } from '../../../components/StudentDetailModal';
-import { EditStudentModal } from '../../../components/EditStudentModal';
-import { AddStudentModal } from '../../../components/AddStudentModal';
+import { StudentDetailModal } from './StudentDetailModal';
+import { EditStudentModal } from './EditStudentModal';
+import { AddStudentModal } from './AddStudentModal';
 
 // Import Hooks & Services
 import { useCourse } from '../../../hooks/useCourse';
@@ -82,9 +82,9 @@ export function StudentManagement() {
   const [editingStudent, setEditingStudent] = useState<any | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  
-    const [selectedParent, setSelectedParent] = useState<Parent | null>(null);
-    const [isParentModalOpen, setIsParentModalOpen] = useState(false);
+
+  const [selectedParent, setSelectedParent] = useState<Parent | null>(null);
+  const [isParentModalOpen, setIsParentModalOpen] = useState(false);
 
   // --- Handlers ---
   const handleCourseChange = (value: string) => {
@@ -108,13 +108,13 @@ export function StudentManagement() {
     studentsQuery.refetch();
   };
 
-   
+
   const handleViewParent = (student: any) => {
-  if (student.parent) {
-    setSelectedParent(student.parent); // Lấy parent từ student
-    setIsParentModalOpen(true);
-  }
-};
+    if (student.parent) {
+      setSelectedParent(student.parent); // Lấy parent từ student
+      setIsParentModalOpen(true);
+    }
+  };
 
 
   return (
@@ -359,7 +359,7 @@ export function StudentManagement() {
         courses={courses} // Truyền courses thực vào modal add
       />
 
-       <ParentDetailModal
+      <ParentDetailModal
         isOpen={isParentModalOpen}
         onClose={() => setIsParentModalOpen(false)}
         parent={selectedParent}

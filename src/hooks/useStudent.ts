@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { StudentCreatePayload, StudentDetail, StudentParams } from "../types/user";
+import type { StudentCreatePayload, StudentDetail, StudentParams, StudentUpdatePayload } from "../types/user";
 import {
   createStudentApi,
   getAllStudentAvailableApi,
   getAllStudentsApi,
   getStudentDetailApi,
+  updateStudentApi,
 } from "../services/userServices";
 
 export function useStudent(params?: Partial<StudentParams>) {
@@ -30,6 +31,15 @@ export function useStudent(params?: Partial<StudentParams>) {
     },
   });
 
+  const updateStudentMutation = useMutation({
+    mutationFn: ({ userId, payload }: { userId: string; payload: Partial<StudentUpdatePayload> }) =>
+      updateStudentApi(userId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["students"] });
+      queryClient.invalidateQueries({ queryKey: ["studentsAvailable"] });
+    },
+  });
+
   const studentDetailQuery = (userId: string) =>
     useQuery<StudentDetail>({
       queryKey: ["studentDetail", userId],
@@ -43,5 +53,6 @@ export function useStudent(params?: Partial<StudentParams>) {
     studentsAvailableQuery,
     studentsQuery,
     studentDetailQuery,
+    updateStudentMutation
   };
 }

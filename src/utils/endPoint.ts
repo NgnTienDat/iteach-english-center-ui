@@ -14,8 +14,13 @@ export const endpoints = {
     UPDATE_PARENT: (userId: string) => `/api/v1/users/parents/${userId}` as const,
     ALL_PARENTS: '/api/v1/users/parents' as const,
 
+    CREATE_STAFF: '/api/v1/users/staff' as const,
+    ALL_TEACHERS: '/api/v1/users/teachers' as const,
+    ALL_STAFFS: '/api/v1/users/staffs' as const,
+
     CREATE_STUDENT: '/api/v1/users/student' as const,
     STUDENT_DETAIL: (userId: string) => `/api/v1/users/students/${userId}` as const,
+    UPDATE_STUDENT: (userId: string) => `/api/v1/users/students/${userId}` as const,
     ALL_STUDENTS: '/api/v1/users/students' as const,
     ALL_STUDENTS_AVAILABLE: '/api/v1/users/student-available' as const,
 

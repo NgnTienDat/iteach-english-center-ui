@@ -1,12 +1,12 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Card } from './ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { Badge } from './ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { formatDate } from '../utils/helper';
-import { useStudent } from '../hooks/useStudent';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
+import { Card } from '../../../components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
+import { Badge } from '../../../components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs';
+import { formatDate } from '../../../utils/helper';
+import { useStudent } from '../../../hooks/useStudent';
 import { Loader2 } from 'lucide-react';
-import type { StudentDetail } from '../types/user';
+import type { StudentDetail } from '../../../types/user';
 
 interface StudentDetailModalProps {
   isOpen: boolean;
@@ -72,11 +72,10 @@ export function StudentDetailModal({ isOpen, onClose, studentId }: StudentDetail
                   <div>
                     <p className="text-sm text-gray-600">Trạng thái</p>
                     <Badge
-                      className={`mt-1 rounded-lg ${
-                        student?.active
+                      className={`mt-1 rounded-lg ${student?.active
                           ? 'bg-green-100 text-green-700 hover:bg-green-100'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-100'
-                      }`}
+                        }`}
                     >
                       {student?.active ? 'Active' : 'Inactive'}
                     </Badge>
@@ -99,11 +98,10 @@ export function StudentDetailModal({ isOpen, onClose, studentId }: StudentDetail
                         <p className="text-sm text-gray-600 mt-1">Lớp: {s.className}</p>
                       </div>
                       <Badge
-                        className={`rounded-lg ${
-                          s.status === 'In progress'
+                        className={`rounded-lg ${s.status === 'In progress'
                             ? 'bg-green-100 text-green-700 hover:bg-green-100'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-100'
-                        }`}
+                          }`}
                       >
                         {s.status}
                       </Badge>

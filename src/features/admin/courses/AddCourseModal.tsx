@@ -20,6 +20,7 @@ interface AddCourseModalProps {
 }
 
 export function AddCourseModal({ isOpen, onClose, teachers, onAdd }: AddCourseModalProps) {
+  console.log("teachers: ", teachers)
   const { createCourseMutation } = useCourse();
   const [formData, setFormData] = useState<CourseCreateRequest>({
     name: '',

@@ -48,6 +48,7 @@ export function AddClassModal({ isOpen, onClose, teachers, courses: courseOption
   }, [isOpen]);
 
   const handleAdd = () => {
+    console.log("form data:", formData)
     // Basic validation
     if (!formData.name || !formData.courseId || !formData.startDate || !formData.endDate) {
       alert('Vui lòng điền đầy đủ thông tin bắt buộc');
