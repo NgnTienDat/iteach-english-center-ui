@@ -14,6 +14,9 @@ import ParentLayout from '../layout/ParentLayout';
 import { USER_ROLES } from '../contexts/AuthContext';
 import ProtectedRoute from './ProtectedRoute';
 import AuthPage from '../features/authentication/AuthPage';
+import CourseList from '../features/teacher/CourseList';
+import StudentList from '../features/parent/StudentList';
+import MyCourses from '@/features/student/MyCourses';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -24,34 +27,28 @@ const AppRoutes: React.FC = () => {
                 <Route path="auth/login" element={<AuthPage />} />
             </Route>
 
-            <Route
-                element={
-                    <ProtectedRoute
-                        allowedRoles={[USER_ROLES.MANAGER, USER_ROLES.ADMIN]}
-                    />
-                }
-            >
+            <Route element={<ProtectedRoute allowedRoles={[USER_ROLES.MANAGER, USER_ROLES.ADMIN]}/>}>
                 <Route path="manager" element={<ManagerLayout />} />
             </Route>
 
             <Route element={<ProtectedRoute allowedRoles={USER_ROLES.TEACHER} />}>
                 <Route path="teacher" element={<TeacherLayout />}>
                     <Route index element={<Navigate to="courses" replace />} />
-                    {/* <Route path="courses" element={<CourseList />} /> */}
+                    <Route path="courses" element={<CourseList />} />
                 </Route>
             </Route>
 
             <Route element={<ProtectedRoute allowedRoles={USER_ROLES.STUDENT} />}>
                 <Route path="student" element={<StudentLayout />}>
                     <Route index element={<Navigate to="courses" replace />} />
-                    {/* <Route path="courses" element={<CourseList />} /> */}
+                    <Route path="courses" element={<MyCourses />} />
                 </Route>
             </Route>
 
             <Route element={<ProtectedRoute allowedRoles={USER_ROLES.PARENT} />}>
                 <Route path="parent" element={<ParentLayout />}>
                     <Route index element={<Navigate to="dashboard" replace />} />
-                    <Route path="dashboard" element={<h1>Parent Dashboard</h1>} />
+                    <Route path="dashboard" element={<StudentList />} />
                 </Route>
             </Route>
 

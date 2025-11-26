@@ -9,6 +9,7 @@ import type { StudentCreatePayload } from '../../../types/user';
 import { useStudent } from '../../../hooks/useStudent';
 import { useClass } from '../../../hooks/useClass';
 import { toast } from 'react-toastify';
+import { Spinner } from '@/components/ui/spinner';
 
 
 
@@ -19,7 +20,7 @@ interface AddStudentModalProps {
 }
 
 export function AddStudentModal({ isOpen, onClose, courses }: AddStudentModalProps) {
-  const { createStudentMutation } = useStudent();
+  const { createStudentMutation, isCreating } = useStudent();
   const [formData, setFormData] = useState<StudentCreatePayload>({
     fullName: '',
     classId: '',
@@ -67,7 +68,7 @@ export function AddStudentModal({ isOpen, onClose, courses }: AddStudentModalPro
 
     console.log('Submitting student data:', formData);
 
-    createStudentMutation.mutate(formData, {
+    createStudentMutation(formData, {
       onSuccess: () => {
         toast.success("Thêm học viên mới thành công!")
         onClose();
@@ -252,11 +253,19 @@ export function AddStudentModal({ isOpen, onClose, courses }: AddStudentModalPro
             Hủy
           </Button>
           <Button
-            onClick={handleAdd}
+            onClick={handleAdd} disabled={isCreating}
             className="bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-md transition-colors"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Thêm học viên
+
+            {isCreating ?
+              <div className="flex justify-center items-center space-x-2">
+                <Spinner className="size-4" />
+                <span >Đang thêm</span>
+              </div>
+              : <>
+                <Plus className="w-4 h-4 mr-2" />
+                Thêm học viên
+              </>}
           </Button>
         </div>
       </DialogContent>

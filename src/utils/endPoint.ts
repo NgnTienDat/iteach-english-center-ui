@@ -9,6 +9,7 @@ export const endpoints = {
 
     MY_INFO: '/api/v1/users/my-info' as const,
     ALL_USERS: '/api/v1/users/' as const,
+    DELETE_USER: (userId: string) => `/api/v1/users/${userId}` as const,
 
     CREATE_PARENT: '/api/v1/users/parents' as const,
     UPDATE_PARENT: (userId: string) => `/api/v1/users/parents/${userId}` as const,

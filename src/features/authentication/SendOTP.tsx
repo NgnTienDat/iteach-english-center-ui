@@ -46,7 +46,7 @@ const SendOTP: React.FC<SendOTPProps> = ({ onBack, onNext }) => {
             return;
         }
 
-        // Call sendOTP API
+        // Call sendOTP API 
         sendOTP(email);
         onNext();
     };

@@ -23,7 +23,7 @@ export function useStudent(params?: Partial<StudentParams>) {
     staleTime: 1000 * 60 * 5,
   });
 
-  const createStudentMutation = useMutation({
+  const {mutate: createStudentMutation, isPending: isCreating} = useMutation({
     mutationFn: (payload: StudentCreatePayload) => createStudentApi(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["students"] });
@@ -50,6 +50,7 @@ export function useStudent(params?: Partial<StudentParams>) {
 
   return {
     createStudentMutation,
+    isCreating,
     studentsAvailableQuery,
     studentsQuery,
     studentDetailQuery,

@@ -39,6 +39,7 @@
     "reset_password_placeholder": "Enter your new password",
     "reset_password_confirm_label": "Confirm New Password",
     "reset_password_confirm_placeholder": "Re-enter your new password",
+    
 
     "back_to_login": "Back to Login",
     "not_received_otp": "Didn't receive the OTP?",
