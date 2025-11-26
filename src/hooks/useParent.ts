@@ -13,7 +13,7 @@ export function useParent() {
   });
 
   // CREATE parent
-  const createParentMutation = useMutation({
+  const {mutate: createParentMutation, isPending: isCreating} = useMutation({
     mutationFn: (payload: Partial<ParentFormData>) => createParentApi(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["parents"] });
@@ -34,6 +34,7 @@ export function useParent() {
   return {
     parentsQuery,
     createParentMutation,
+    isCreating,
     updateParentMutation,
   };
 }

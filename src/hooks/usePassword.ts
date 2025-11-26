@@ -1,11 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { sentOTPApi, verifyOTPApi, resetPasswordApi } from '../services/authServices';
+import { useNavigate } from 'react-router-dom';
 
 const usePassword = () => {
     const [customError, setCustomError] = useState<string | null>(null);
     const [email, setEmail] = useState<string>('');
     const [token, setToken] = useState<string>('');
+    const navigate = useNavigate();
 
     const {
         mutate: sendOTP,
@@ -20,6 +22,7 @@ const usePassword = () => {
         },
         onSuccess: (_, variables) => {
             setCustomError(null);
+
             setEmail(variables);
         },
         onError: (err) => {
@@ -36,12 +39,7 @@ const usePassword = () => {
         isPending: isVerifyingOTP,
         isSuccess: isOTPVerified,
     } = useMutation<string, Error, { email: string; otp: string }>({
-        mutationFn: async ({ email: emailAddress, otp }) => {
-            const timeoutPromise = new Promise<never>((_, reject) =>
-                setTimeout(() => reject(new Error('Network timeout')), 10000)
-            );
-            return Promise.race([verifyOTPApi(emailAddress, otp), timeoutPromise]);
-        },
+        mutationFn: ({ email: emailAddress, otp }) => verifyOTPApi(emailAddress, otp),
         onSuccess: (data) => {
             setCustomError(null);
             setToken(data);
@@ -73,6 +71,7 @@ const usePassword = () => {
             setCustomError(null);
             setEmail('');
             setToken('');
+            navigate('/login');
         },
         onError: (err) => {
             if (err.message === 'Network timeout') {
@@ -90,7 +89,8 @@ const usePassword = () => {
         sendOTP, isSendingOTP, isOTPSent,
         verifyOTP, isVerifyingOTP, isOTPVerified,
         resetPassword, isResettingPassword, isPasswordReset,
-        error: customError, clearError, email, token, resendOTP
+        error: customError, clearError,
+        email, token, resendOTP
     };
 };
 

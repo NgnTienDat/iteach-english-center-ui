@@ -278,3 +278,23 @@ export async function updateStudentApi(userId: string, payload: Partial<StudentU
         throw new Error("An unexpected error occurred while updating student.");
     }
 }
+
+export async function deleteUserApi(userId: string): Promise<void> {
+    try {
+        const res = await AUTH_REQUEST.delete(
+            endpoints.DELETE_USER(userId)
+        );
+        if (res.status !== 200) {
+            throw new Error(res.data?.message || "Deleting user failed");
+        }
+    } catch (error: unknown) {
+        if (error && typeof error === "object" && "response" in error) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            throw new Error(
+                axiosError.response?.data?.message ||
+                "An unexpected error occurred while deleting user."
+            );
+        }
+        throw new Error("An unexpected error occurred while deleting user.");
+    }
+}

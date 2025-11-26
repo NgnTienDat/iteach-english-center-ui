@@ -33,7 +33,6 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ onBack }) => {
             return;
         }
 
-        // Call resetPassword API with shared email and token from context
         resetPassword({ email, token, newPassword });
     };
 
@@ -68,7 +67,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ onBack }) => {
                             className="block text-sm text-left font-medium text-gray-900 mb-2"
                             htmlFor="new-password"
                         >
-                            {t('forgot_password.reset_password_new')}
+                            {t('forgot_password.reset_password_label')}
                         </label>
                         <div className="relative">
                             <input
@@ -77,7 +76,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ onBack }) => {
                                 value={newPassword}
                                 onChange={handlePasswordChange(setNewPassword)}
                                 className="w-full px-4 py-3 pr-12 bg-gray-100 border border-gray-200 rounded-xl transition placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-gray-300"
-                                placeholder={t('forgot_password.reset_password_new_placeholder')}
+                                placeholder={t('forgot_password.reset_password_placeholder')}
                                 disabled={isResettingPassword}
                             />
                             <button
@@ -98,7 +97,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ onBack }) => {
                             className="block text-sm text-left font-medium text-gray-900 mb-2"
                             htmlFor="confirm-password"
                         >
-                            {t('forgot_password.reset_password_confirm')}
+                            {t('forgot_password.reset_password_confirm_label')}
                         </label>
                         <div className="relative">
                             <input

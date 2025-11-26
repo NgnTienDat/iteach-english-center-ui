@@ -10,6 +10,7 @@ import { Badge } from "../../../components/ui/badge";
 import { Save, X, Plus } from "lucide-react";
 import { toast } from "react-toastify";
 import type { Parent } from "../../../types/Parent";
+import { Spinner } from "@/components/ui/spinner";
 
 
 interface EditParentModalProps {
@@ -36,12 +37,12 @@ export function EditParentModal({ isOpen, onClose, parent, isAddMode }: EditPare
     resetForm,
   } = useParentForm({ parent });
 
-  const { createParentMutation, updateParentMutation } = useParent();
+  const { createParentMutation, isCreating, updateParentMutation } = useParent();
 
   const handleSave = () => {
     if (isAddMode) {
       // CREATE parent
-      createParentMutation.mutate(formData, {
+      createParentMutation(formData, {
         onSuccess: () => {
           toast.success("Created parent successfully!");
           resetForm();
@@ -205,10 +206,21 @@ export function EditParentModal({ isOpen, onClose, parent, isAddMode }: EditPare
             className="rounded-xl hover:bg-gray-100 transition-colors">
             <X className="w-4 h-4 mr-2" /> Hủy
           </Button>
-          <Button onClick={handleSave}
+          <Button onClick={handleSave} disabled={isCreating}
             className="bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-md transition-colors"
           >
-            <Save className="w-4 h-4 mr-2" /> {isAddMode ? "Thêm phụ huynh" : "Lưu thay đổi"}
+            {isCreating ?
+              <div className="flex justify-center items-center space-x-2">
+                <Spinner className="size-4" />
+                <span>
+                  {isAddMode ? "Thêm phụ huynh" : "Lưu thay đổi"}
+                </span>
+              </div>
+              :
+              <>
+                <Save className="w-4 h-4" /> {isAddMode ? "Thêm phụ huynh" : "Lưu thay đổi"}
+              </>
+            }
           </Button>
         </div>
       </DialogContent>

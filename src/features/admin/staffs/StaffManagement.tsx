@@ -10,20 +10,19 @@ import { EditStaffModal } from './EditStaffModal';
 import { AddStaffModal } from './AddStaffModal';
 import type { Staff, StaffResponse } from '../../../types/user';
 import { useTeacher } from '../../../hooks/useTeacher';
+import { useUser } from '../../../hooks/useUser';
 
 
 
 
 export function StaffManagement() {
   const [activeView, setActiveView] = useState<'teachers' | 'staff'>('teachers');
-  // const [teachers, setTeachers] = useState<Staff[]>(mockTeachers);
+  const { deleteUser, isDeleting } = useUser();
 
   const { teachersQuery, staffsQuery } = useTeacher();
 
   const { data: teachers } = teachersQuery;
   const { data: staffs } = staffsQuery;
-
-  // const [staff, setStaff] = useState<Staff[]>(mockStaff);
   const [searchTeacher, setSearchTeacher] = useState('');
   const [searchStaff, setSearchStaff] = useState('');
   const [filterTeacherDept, setFilterTeacherDept] = useState('all');
@@ -62,21 +61,15 @@ export function StaffManagement() {
     setIsEditModalOpen(true);
   };
 
-  // const handleSaveStaff = (updatedStaff: Staff) => {
-  //   if (editType === 'teacher') {
-  //     setTeachers(teachers.map((t) => (t.id === updatedStaff.id ? updatedStaff : t)));
-  //   } else {
-  //     setStaff(staff.map((s) => (s.id === updatedStaff.id ? updatedStaff : s)));
-  //   }
-  // };
 
-  // const handleDeleteTeacher = (id: number) => {
-  //   setTeachers(teachers.filter((teacher) => teacher.id !== id));
-  // };
+  const handleDeleteTeacher = (id: string) => {
+    if (confirm("Are you sure you want to delete this teacher?")) {
+      deleteUser(id);
+    }
+  };
 
-  // const handleDeleteStaff = (id: number) => {
-  //   setStaff(staff.filter((member) => member.id !== id));
-  // };
+
+
 
   const handleAddTeacher = () => {
     setAddType('teacher');
@@ -217,7 +210,7 @@ export function StaffManagement() {
                         <Button
                           variant="outline"
                           size="sm"
-                          // onClick={() => handleDeleteTeacher(teacher.id)}
+                          onClick={() => handleDeleteTeacher(teacher.id)}
                           className="rounded-xl hover:bg-red-50 hover:border-red-500 text-red-600 border-red-200 transition-colors"
                         >
                           <Trash2 className="w-4 h-4 mr-1.5" />
