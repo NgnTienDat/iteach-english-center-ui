@@ -16,7 +16,7 @@ interface AddStaffModalProps {
 }
 
 export function AddStaffModal({ isOpen, onClose, type }: AddStaffModalProps) {
-  const { createTeacherMutation, createStaffMutation } = useTeacher();
+  const { createTeacherMutation } = useTeacher();
   console.log("type: ", type)
 
   const [formData, setFormData] = useState<TeacherCreatePayload>({
@@ -24,7 +24,6 @@ export function AddStaffModal({ isOpen, onClose, type }: AddStaffModalProps) {
     fullName: '',
     phoneNumber: '',
     status: 'active',
-    department: '',
     position: '',
     startDate: '',
     type: type
@@ -45,7 +44,6 @@ export function AddStaffModal({ isOpen, onClose, type }: AddStaffModalProps) {
         fullName: '',
         phoneNumber: '',
         status: 'active',
-        department: '',
         position: '',
         startDate: '',
         type: type,
@@ -54,7 +52,7 @@ export function AddStaffModal({ isOpen, onClose, type }: AddStaffModalProps) {
   }, [isOpen, type]); // Add type as dependency
 
   const handleAdd = () => {
-    if (!formData.fullName || !formData.position || !formData.department || !formData.email) {
+    if (!formData.fullName || !formData.position || !formData.email) {
       alert('Vui lòng điền đầy đủ thông tin bắt buộc');
       return;
     }
@@ -69,34 +67,17 @@ export function AddStaffModal({ isOpen, onClose, type }: AddStaffModalProps) {
 
     console.log(formData)
 
-    if (type === 'teacher')
-      createTeacherMutation.mutate(formData, {
-        onSuccess: () => {
-          toast.success("Create new teacher successfully!");
-          onClose();
-        },
-        onError: (error: any) => {
-          toast.error(error?.message || "Something went wrong");
-        },
-      }
-      );
-    else createStaffMutation.mutate(formData, {
+    createTeacherMutation.mutate(formData, {
       onSuccess: () => {
-        toast.success("Create new staff successfully!");
+        toast.success("Create new teacher successfully!");
         onClose();
       },
       onError: (error: any) => {
         toast.error(error?.message || "Something went wrong");
       },
-    }
-    );
-
-    onClose();
+    });
   };
 
-  const departmentOptions = type === 'teacher'
-    ? ['IELTS Department', 'TOEIC Department', 'Business Department', 'Kids Department', 'General Department']
-    : ['Phòng Đào tạo', 'Phòng Tư vấn', 'Phòng Tài chính', 'Phòng Marketing', 'Phòng Hành chính'];
 
   const positionOptions = type === 'teacher'
     ? [
@@ -182,31 +163,6 @@ export function AddStaffModal({ isOpen, onClose, type }: AddStaffModalProps) {
                 </SelectContent>
               </Select>
             </div>
-
-            {/* Department */}
-            <div className="space-y-2">
-              <Label>Bộ phận *</Label>
-              <Select
-                value={formData.department}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, department: value })
-                }
-              >
-                <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
-                  <SelectValue placeholder="Chọn bộ phận" />
-                </SelectTrigger>
-                <SelectContent>
-                  {departmentOptions.map((dept) => (
-                    <SelectItem key={dept} value={dept}>
-                      {dept}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
             {/* Phone */}
             <div className="space-y-2">
               <Label>Số điện thoại</Label>
@@ -220,6 +176,11 @@ export function AddStaffModal({ isOpen, onClose, type }: AddStaffModalProps) {
               />
             </div>
 
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+
+
             {/* Start date */}
             <div className="space-y-2">
               <Label>Ngày bắt đầu</Label>
@@ -232,26 +193,27 @@ export function AddStaffModal({ isOpen, onClose, type }: AddStaffModalProps) {
                 className="rounded-xl border-gray-300 hover:shadow-md transition-shadow"
               />
             </div>
+            <div className="space-y-2">
+              <Label>Trạng thái *</Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, status: value })
+                }
+              >
+                <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Đang làm việc</SelectItem>
+                  <SelectItem value="inactive">Tạm nghỉ</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Status */}
-          <div className="space-y-2">
-            <Label>Trạng thái *</Label>
-            <Select
-              value={formData.status}
-              onValueChange={(value) =>
-                setFormData({ ...formData, status: value })
-              }
-            >
-              <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="active">Đang làm việc</SelectItem>
-                <SelectItem value="inactive">Tạm nghỉ</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+
         </div>
         <div className="flex justify-end gap-3 pt-4 border-t">
           <Button

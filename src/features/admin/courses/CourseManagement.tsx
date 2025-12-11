@@ -39,7 +39,7 @@ export function CourseManagement() {
   const [isAddClassModalOpen, setIsAddClassModalOpen] = useState(false);
 
 
-  const { users } = useUser('teacher');
+  const { users } = useUser({ role: 'teacher' });
   const { coursesQuery, deleteCourseMutation } = useCourse();
   const { classesQuery } = useClass();
 
@@ -131,10 +131,10 @@ export function CourseManagement() {
             </Button>
           </div>
 
-          <Card className="p-6 rounded-xl shadow-md">
+        <Card className="p-6 rounded-xl shadow-md">
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="bg-[#F0F4FF] hover:bg-[#F0F4FF] border-b border-gray-200">
                   <TableHead>Course ID</TableHead>
                   <TableHead>Course Name</TableHead>
                   <TableHead>Duration</TableHead>

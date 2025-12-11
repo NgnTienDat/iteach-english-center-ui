@@ -22,7 +22,6 @@ export function EditStudentModal({ isOpen, onClose, student }: EditStudentModalP
   const [formData, setFormData] = useState<StudentResponse | null>(null);
   const { updateStudentMutation } = useStudent();
 
-  console.log(student)
 
   useEffect(() => {
     if (student) {
@@ -104,43 +103,11 @@ export function EditStudentModal({ isOpen, onClose, student }: EditStudentModalP
               />
             </div>
 
-            {/* <div className="space-y-2">
-              <Label htmlFor="studentCourse">Khóa học *</Label>
-              <Select value={formData.course} onValueChange={(value) => setFormData({ ...formData, course: value })}>
-                <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="IELTS Foundation">IELTS Foundation</SelectItem>
-                  <SelectItem value="IELTS Advanced">IELTS Advanced</SelectItem>
-                  <SelectItem value="TOEIC Advanced">TOEIC Advanced</SelectItem>
-                  <SelectItem value="Business English">Business English</SelectItem>
-                  <SelectItem value="General English">General English</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="studentClass">Lớp *</Label>
-              <Select value={formData.class} onValueChange={(value) => setFormData({ ...formData, class: value })}>
-                <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="IELTS 6.5+ Morning">IELTS 6.5+ Morning</SelectItem>
-                  <SelectItem value="TOEIC 750+ Evening">TOEIC 750+ Evening</SelectItem>
-                  <SelectItem value="Business English Pro">Business English Pro</SelectItem>
-                  <SelectItem value="IELTS Advanced">IELTS Advanced</SelectItem>
-                  <SelectItem value="General English">General English</SelectItem>
-                </SelectContent>
-              </Select>
-            </div> */}
-
-
 
             <div className="space-y-2">
               <Label htmlFor="studentStatus">Trạng thái *</Label>
-              <Select value={formData?.active ? "active" : "inactive"} onValueChange={(value) => setFormData({ ...formData, active: value === 'active' })}>
+              <Select value={formData?.active ? "active" : "inactive"}
+                onValueChange={(value) => setFormData({ ...formData, active: value === 'active' })}>
                 <SelectTrigger className="rounded-xl border-gray-300 hover:shadow-md transition-shadow">
                   <SelectValue />
                 </SelectTrigger>

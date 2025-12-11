@@ -9,7 +9,11 @@ export const endpoints = {
 
     MY_INFO: '/api/v1/users/my-info' as const,
     ALL_USERS: '/api/v1/users/' as const,
+    ALL_USERS_PAGE: '/api/v1/users/page' as const,
+    CREATE_USER: '/api/v1/users/' as const,
+    ALL_UNLINKED_USERS: '/api/v1/users/unlinked' as const,
     DELETE_USER: (userId: string) => `/api/v1/users/${userId}` as const,
+    UPDATE_USER: (userId: string) => `/api/v1/users/${userId}` as const,
 
     CREATE_PARENT: '/api/v1/users/parents' as const,
     UPDATE_PARENT: (userId: string) => `/api/v1/users/parents/${userId}` as const,
@@ -17,6 +21,7 @@ export const endpoints = {
 
     CREATE_STAFF: '/api/v1/users/staff' as const,
     ALL_TEACHERS: '/api/v1/users/teachers' as const,
+    UPDATE_TEACHER: (userId: string) => `/api/v1/users/teachers/${userId}` as const,
     ALL_STAFFS: '/api/v1/users/staffs' as const,
 
     CREATE_STUDENT: '/api/v1/users/student' as const,
