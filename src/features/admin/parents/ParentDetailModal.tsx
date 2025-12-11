@@ -137,7 +137,7 @@ export function ParentDetailModal({ isOpen, onClose, parent }: ParentDetailModal
           </Card>
 
           {/* Quick Actions */}
-          <Card className="p-6 rounded-xl shadow-md bg-gradient-to-br from-gray-50 to-white">
+          <Card className="p-6 rounded-xl shadow-md bg-linear-to-br from-gray-50 to-white">
             <h3 className="text-gray-900 mb-4">Thao tác nhanh</h3>
             <div className="flex gap-3">
               <Button className="flex-1 bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-md">

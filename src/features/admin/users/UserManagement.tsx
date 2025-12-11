@@ -1,418 +1,292 @@
-// import { useState } from 'react';
-// import { Plus, Edit, Trash2, Search } from 'lucide-react';
-// import { UserModal } from '../../../components/UserModal';
-// import { Button } from '../../../components/ui/button';
-// import { Card } from '../../../components/ui/card';
-// import { Input } from '../../../components/ui/input';
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
-// import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table';
-// import { Badge } from '../../../components/ui/badge';
-
-// interface User {
-//   id: number;
-//   name: string;
-//   email: string;
-//   role: string;
-//   status: string;
-// }
-
-// const mockUsers: User[] = [
-//   { id: 1, name: 'Nguyen Van An', email: 'nguyenvanan@gmail.com', role: 'Student', status: 'active' },
-//   { id: 2, name: 'Tran Thi Binh', email: 'tranthiminh@gmail.com', role: 'Student', status: 'active' },
-//   { id: 3, name: 'Sarah Johnson', email: 'sarah.j@englishcenter.com', role: 'Teacher', status: 'active' },
-//   { id: 4, name: 'David Lee', email: 'david.lee@englishcenter.com', role: 'Teacher', status: 'active' },
-//   { id: 5, name: 'Le Hoang Nam', email: 'lehoangnam@gmail.com', role: 'Staff', status: 'active' },
-//   { id: 6, name: 'Pham Thu Ha', email: 'phamthuha@gmail.com', role: 'Parent', status: 'active' },
-//   { id: 7, name: 'Emma Wilson', email: 'emma.w@englishcenter.com', role: 'Teacher', status: 'inactive' },
-//   { id: 8, name: 'Dang Quoc Tuan', email: 'dangquoctuan@gmail.com', role: 'Student', status: 'active' },
-// ];
-
-// export function UserManagement() {
-//   const [users, setUsers] = useState<User[]>(mockUsers);
-//   const [filterRole, setFilterRole] = useState<string>('all');
-//   const [searchQuery, setSearchQuery] = useState<string>('');
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const [editingUser, setEditingUser] = useState<User | null>(null);
-
-//   const filteredUsers = users.filter(user => {
-//     const matchesRole = filterRole === 'all' || user.role === filterRole;
-//     const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-//                           user.email.toLowerCase().includes(searchQuery.toLowerCase());
-//     return matchesRole && matchesSearch;
-//   });
-
-//   const handleAddUser = () => {
-//     setEditingUser(null);
-//     setIsModalOpen(true);
-//   };
-
-//   const handleEditUser = (user: User) => {
-//     setEditingUser(user);
-//     setIsModalOpen(true);
-//   };
-
-//   const handleDeleteUser = (id: number) => {
-//     setUsers(users.filter(user => user.id !== id));
-//   };
-
-//   const handleSaveUser = (userData: Omit<User, 'id' | 'status'>) => {
-//     if (editingUser) {
-//       // Edit existing user
-//       setUsers(users.map(user => 
-//         user.id === editingUser.id 
-//           ? { ...user, ...userData }
-//           : user
-//       ));
-//     } else {
-//       // Add new user
-//       const newUser: User = {
-//         id: Math.max(...users.map(u => u.id)) + 1,
-//         ...userData,
-//         status: 'active'
-//       };
-//       setUsers([...users, newUser]);
-//     }
-//     setIsModalOpen(false);
-//   };
-
-//   const getRoleBadgeColor = (role: string) => {
-//     switch (role) {
-//       case 'Teacher':
-//         return 'bg-blue-100 text-blue-700 hover:bg-blue-100';
-//       case 'Staff':
-//         return 'bg-purple-100 text-purple-700 hover:bg-purple-100';
-//       case 'Student':
-//         return 'bg-green-100 text-green-700 hover:bg-green-100';
-//       case 'Parent':
-//         return 'bg-amber-100 text-amber-700 hover:bg-amber-100';
-//       default:
-//         return '';
-//     }
-//   };
-
-//   return (
-//     <div className="space-y-6">
-//       <div className="flex items-center justify-between">
-//         <div>
-//           <h2 className="text-gray-900">User Account Management</h2>
-//           <p className="text-sm text-gray-600 mt-1">Manage account information for students, teachers, staff and parents</p>
-//         </div>
-//         <Button 
-//           onClick={handleAddUser}
-//           className="bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-md"
-//         >
-//           <Plus className="w-4 h-4 mr-2" />
-//           Add New Account
-//         </Button>
-//       </div>
-
-//       <Card className="p-6 rounded-xl shadow-md">
-//         <div className="mb-6 flex items-center gap-4">
-//           <div className="relative flex-1 max-w-md">
-//             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-//             <Input
-//               placeholder="Search users..."
-//               value={searchQuery}
-//               onChange={(e) => setSearchQuery(e.target.value)}
-//               className="pl-10 rounded-xl border-gray-300"
-//             />
-//           </div>
-
-//           <div className="flex items-center gap-2">
-//             <label className="text-sm text-gray-700 whitespace-nowrap">Role:</label>
-//             <Select value={filterRole} onValueChange={setFilterRole}>
-//               <SelectTrigger className="w-48 rounded-xl border-gray-300">
-//                 <SelectValue placeholder="All" />
-//               </SelectTrigger>
-//               <SelectContent>
-//                 <SelectItem value="all">All</SelectItem>
-//                 <SelectItem value="Student">Student</SelectItem>
-//                 <SelectItem value="Staff">Staff</SelectItem>
-//                 <SelectItem value="Teacher">Teacher</SelectItem>
-//                 <SelectItem value="Parent">Parent</SelectItem>
-//               </SelectContent>
-//             </Select>
-//           </div>
-//         </div>
-
-//         <Table>
-//           <TableHeader>
-//             <TableRow>
-//               <TableHead>Full Name</TableHead>
-//               <TableHead>Email</TableHead>
-//               <TableHead>Role</TableHead>
-//               <TableHead>Status</TableHead>
-//               <TableHead className="text-right">Actions</TableHead>
-//             </TableRow>
-//           </TableHeader>
-//           <TableBody>
-//             {filteredUsers.map((user) => (
-//               <TableRow key={user.id}>
-//                 <TableCell>{user.name}</TableCell>
-//                 <TableCell className="text-sm text-gray-600">{user.email}</TableCell>
-//                 <TableCell>
-//                   <Badge className={`rounded-lg ${getRoleBadgeColor(user.role)}`}>
-//                     {user.role}
-//                   </Badge>
-//                 </TableCell>
-//                 <TableCell>
-//                   <Badge 
-//                     variant={user.status === 'active' ? 'default' : 'secondary'}
-//                     className={`rounded-lg ${user.status === 'active' ? 'bg-green-100 text-green-700 hover:bg-green-100' : ''}`}
-//                   >
-//                     {user.status === 'active' ? 'Active' : 'Inactive'}
-//                   </Badge>
-//                 </TableCell>
-//                 <TableCell className="text-right">
-//                   <div className="flex items-center justify-end gap-2">
-//                     <Button 
-//                       variant="ghost" 
-//                       size="sm"
-//                       onClick={() => handleEditUser(user)}
-//                       className="rounded-lg hover:bg-gray-100"
-//                     >
-//                       <Edit className="w-4 h-4" />
-//                     </Button>
-//                     <Button 
-//                       variant="ghost" 
-//                       size="sm"
-//                       onClick={() => handleDeleteUser(user.id)}
-//                       className="rounded-lg hover:bg-red-100 text-red-600"
-//                     >
-//                       <Trash2 className="w-4 h-4" />
-//                     </Button>
-//                   </div>
-//                 </TableCell>
-//               </TableRow>
-//             ))}
-//           </TableBody>
-//         </Table>
-//       </Card>
-
-//       <UserModal 
-//         isOpen={isModalOpen}
-//         onClose={() => setIsModalOpen(false)}
-//         onSave={handleSaveUser}
-//         user={editingUser}
-//       />
-//     </div>
-//   );
-// }
-import { useState } from "react";
-import { Plus, Edit, Trash2, Search } from "lucide-react";
-import { UserModal } from "../../../components/UserModal";
+import { useState, useEffect } from "react";
+import {
+  Plus, Edit, Trash2, Search,
+  ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight
+} from "lucide-react";
+import { UserModal } from "./UserModal";
 import { Button } from "../../../components/ui/button";
 import { Card } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "../../../components/ui/select";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "../../../components/ui/table";
 import { Badge } from "../../../components/ui/badge";
 import { useUser } from "../../../hooks/useUser";
-import type { User } from "../../../services/authServices";
+import type { User } from "@/types/user";
 
 export function UserManagement() {
-  const { users, isLoading, isError, error, refetch } = useUser();
+  // 1. State cho Pagination và Filter
+  const [currentPage, setCurrentPage] = useState(0); // API thường bắt đầu từ 0
+  const [pageSize] = useState(10); // Cố định 10 item/trang
   const [filterRole, setFilterRole] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+  // 2. Gọi Hook useUser với tham số phân trang
+  // Lưu ý: api search chưa có trong hook, nên tạm thời search sẽ chỉ filter trên trang hiện tại 
+  // hoặc cần update API sau. Ở đây ta truyền role và page vào.
+  const {
+    usersPage,
+    isLoadingPage,
+    isErrorPage,
+    errorPage,
+    deleteUser,
+    refetchPage
+  } = useUser({
+    role: filterRole === "all" ? undefined : filterRole,
+    page: currentPage,
+    size: pageSize
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
 
-  if (isLoading)
-    return <p className="text-gray-600">Đang tải danh sách người dùng...</p>;
-  if (isError)
-    return (
-      <p className="text-red-500">
-        Lỗi khi tải dữ liệu: {error?.message}
-        <Button onClick={() => refetch()} className="ml-2" size="sm">
-          Thử lại
-        </Button>
-      </p>
-    );
+  // 3. Reset về trang 0 khi đổi Role hoặc Search
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [filterRole, searchQuery]);
 
-  const filteredUsers =
-    users?.filter((user) => {
-      const userRole = user.roles[0]?.roleName ?? "";
-      const matchesRole =
-        filterRole === "all" || userRole.toLowerCase() === filterRole.toLowerCase();
-      const matchesSearch =
-        user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesRole && matchesSearch;
-    }) ?? [];
+  // Lấy dữ liệu từ usersPage
+  // Giả định cấu trúc PageResponse: { content: [], totalPages: 0, totalElements: 0, number: 0, ... }
+  const users = usersPage?.content || [];
+  const totalPages = usersPage?.totalPages || 0;
+  const totalElements = usersPage?.totalElements || 0;
 
-  const handleAddUser = () => {
-    setEditingUser(null);
-    setIsModalOpen(true);
-  };
+  // Xử lý search client-side (vì API chưa hỗ trợ param search)
+  const filteredUsers = users.filter((user) =>
+    user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const handleEditUser = (user: User) => {
-    setEditingUser(user);
-    setIsModalOpen(true);
-  };
-
-  // Các hàm thêm/sửa/xóa hiện chỉ thao tác local
-  const handleDeleteUser = (id: string) => {
-    alert(`Xóa người dùng ${id} (chưa triển khai API xóa)`);
-  };
-
-  const handleSaveUser = (userData: Partial<User>) => {
-    console.log("Save user:", userData);
-    setIsModalOpen(false);
-  };
+  // Handlers
+  const handleAddUser = () => { setEditingUser(null); setIsModalOpen(true); };
+  const handleEditUser = (user: User) => { setEditingUser(user); setIsModalOpen(true); };
+  const handleDeleteUser = (id: string) => { if (confirm("Are you sure?")) deleteUser(id); };
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case "TEACHER":
-        return "bg-blue-100 text-blue-700 hover:bg-blue-100";
-      case "STAFF":
-        return "bg-purple-100 text-purple-700 hover:bg-purple-100";
-      case "STUDENT":
-        return "bg-green-100 text-green-700 hover:bg-green-100";
-      case "PARENT":
-        return "bg-amber-100 text-amber-700 hover:bg-amber-100";
-      case "ADMIN":
-        return "bg-gray-200 text-gray-700 hover:bg-gray-200";
-      default:
-        return "";
+      case "TEACHER": return "bg-blue-100 text-blue-700 hover:bg-blue-100";
+      case "STAFF": return "bg-purple-100 text-purple-700 hover:bg-purple-100";
+      case "STUDENT": return "bg-green-100 text-green-700 hover:bg-green-100";
+      case "PARENT": return "bg-amber-100 text-amber-700 hover:bg-amber-100";
+      case "ADMIN": return "bg-gray-200 text-gray-700 hover:bg-gray-200";
+      default: return "";
     }
   };
 
+  // Logic hiển thị nút phân trang (Rút gọn để hiển thị thông minh: 1 2 ... 5 6 7 ... 10)
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    const maxVisiblePages = 5; // Số lượng nút trang tối đa muốn hiển thị
+
+    let startPage = Math.max(0, currentPage - 2);
+    let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage < maxVisiblePages - 1) {
+      startPage = Math.max(0, endPage - maxVisiblePages + 1);
+    }
+
+    // Nút trang đầu
+    if (startPage > 0) {
+      buttons.push(
+        <Button key="first" variant="outline" className="h-9 w-9" onClick={() => setCurrentPage(0)}>1</Button>
+      );
+      if (startPage > 1) buttons.push(<span key="dots1" className="flex items-center justify-center h-9 w-9 text-gray-400">...</span>);
+    }
+
+    // Các nút ở giữa
+    for (let i = startPage; i <= endPage; i++) {
+      const isActive = i === currentPage;
+      buttons.push(
+        <Button
+          key={i}
+          variant={isActive ? "default" : "outline"}
+          className={`h-9 w-9 rounded-lg ${isActive
+            ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm border border-blue-600"
+            : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+            }`}
+          onClick={() => setCurrentPage(i)}
+        >
+          {i + 1}
+        </Button>
+      );
+    }
+
+    // Nút trang cuối
+    if (endPage < totalPages - 1) {
+      if (endPage < totalPages - 2) buttons.push(<span key="dots2" className="flex items-center justify-center h-9 w-9 text-gray-400">...</span>);
+      buttons.push(
+        <Button key="last" variant="outline" className="h-9 w-9" onClick={() => setCurrentPage(totalPages - 1)}>{totalPages}</Button>
+      );
+    }
+
+    return buttons;
+  };
+
+  if (isLoadingPage) return <p className="text-gray-600 p-8">Đang tải danh sách...</p>;
+  if (isErrorPage) return <p className="text-red-500 p-8">Lỗi: {errorPage?.message} <Button onClick={() => refetchPage()}>Thử lại</Button></p>;
+
+  // Tính toán hiển thị "Showing X to Y of Z"
+  const startRecord = currentPage * pageSize + 1;
+  const endRecord = Math.min((currentPage + 1) * pageSize, totalElements);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative pb-20">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-gray-900">User Account Management</h2>
+          <h2 className="text-gray-900 text-2xl font-bold">User Account Management</h2>
           <p className="text-sm text-gray-600 mt-1">
             Manage account information for students, teachers, staff and parents
           </p>
         </div>
-        <Button
-          onClick={handleAddUser}
-          className="bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-md"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add New Account
+        <Button onClick={handleAddUser} className="bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-md">
+          <Plus className="w-4 h-4 mr-2" /> Add New Account
         </Button>
       </div>
 
-      {/* Table */}
-      <Card className="p-6 rounded-xl shadow-md">
-        {/* Filter */}
-        <div className="mb-6 flex items-center gap-4">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input
-              placeholder="Search users..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 rounded-xl border-gray-300"
-            />
+      {/* Table Card */}
+      <Card className="p-6 rounded-xl shadow-md min-h-[500px] flex flex-col justify-between">
+        <div>
+          {/* Filter */}
+          <div className="mb-6 flex items-center gap-4">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                placeholder="Search users on this page..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 rounded-xl border-gray-300"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-gray-700 whitespace-nowrap">Role:</label>
+              <Select value={filterRole} onValueChange={setFilterRole}>
+                <SelectTrigger className="w-48 rounded-xl border-gray-300">
+                  <SelectValue placeholder="All" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="STUDENT">Student</SelectItem>
+                  <SelectItem value="STAFF">Staff</SelectItem>
+                  <SelectItem value="TEACHER">Teacher</SelectItem>
+                  <SelectItem value="PARENT">Parent</SelectItem>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <label className="text-sm text-gray-700 whitespace-nowrap">
-              Role:
-            </label>
-            <Select value={filterRole} onValueChange={setFilterRole}>
-              <SelectTrigger className="w-48 rounded-xl border-gray-300">
-                <SelectValue placeholder="All" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="STUDENT">Student</SelectItem>
-                <SelectItem value="STAFF">Staff</SelectItem>
-                <SelectItem value="TEACHER">Teacher</SelectItem>
-                <SelectItem value="PARENT">Parent</SelectItem>
-                <SelectItem value="ADMIN">Admin</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Table */}
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Full Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredUsers.map((user) => {
-              const role = user.roles[0]?.roleName || "N/A";
-              return (
-                <TableRow key={user.id}>
-                  <TableCell>{user.fullName}</TableCell>
-                  <TableCell className="text-sm text-gray-600">
-                    {user.email}
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={`rounded-lg ${getRoleBadgeColor(role)}`}>
-                      {role.toLowerCase()}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={user.active ? "default" : "secondary"}
-                      className={`rounded-lg ${user.active
-                        ? "bg-green-100 text-green-700 hover:bg-green-100"
-                        : ""
-                        }`}
-                    >
-                      {user.active ? "Active" : "Inactive"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEditUser(user)}
-                        className="rounded-lg hover:bg-gray-100"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteUser(user.id)}
-                        className="rounded-lg hover:bg-red-100 text-red-600"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
+          {/* Table */}
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-[#F0F4FF] hover:bg-[#F0F4FF] border-b border-gray-200">
+                <TableHead>Full Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Address</TableHead>
+                <TableHead>User ID</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-center">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredUsers.length > 0 ? (
+                filteredUsers.map((user) => {
+                  const role = user.roles?.[0]?.roleName || "N/A";
+                  return (
+                    <TableRow key={user.id} className="hover:bg-[#F8FAFE] transition-colors border-b border-gray-100">
+                      <TableCell className="font-medium">{user.fullName}</TableCell>
+                      <TableCell className="text-sm text-gray-600">{user.email}</TableCell>
+                      <TableCell className="text-sm text-gray-600 max-w-xs truncate">{user.address || 'N/A'}</TableCell>
+                      <TableCell>
+                        {user.userCode ? (
+                          <Badge className="rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-100">{user.userCode}</Badge>
+                        ) : (<span className="text-sm text-gray-400">N/A</span>)}
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={`rounded-lg ${getRoleBadgeColor(role)}`}>{role.toLowerCase()}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={user.active ? "default" : "secondary"} className={`rounded-lg ${user.active ? "bg-green-100 text-green-700 hover:bg-green-100" : ""}`}>
+                          {user.active ? "Active" : "Inactive"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-center gap-2">
+                          <Button variant="ghost" size="sm" onClick={() => handleEditUser(user)} className="rounded-lg hover:bg-gray-100">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleDeleteUser(user.id)} className="rounded-lg hover:bg-red-100 text-red-600">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-24 text-center text-gray-500">
+                    No users found.
                   </TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
 
-      {/* Modal */}
-      <UserModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveUser}
-        user={editingUser}
-      />
+      <div className="flex items-center gap-2">
+        {/* Về trang đầu */}
+        <Button
+          variant="outline" size="icon"
+          className="h-9 w-9 rounded-lg border-gray-300 text-gray-500 disabled:opacity-50"
+          disabled={currentPage === 0}
+          onClick={() => setCurrentPage(0)}
+        >
+          <ChevronsLeft className="h-4 w-4" />
+        </Button>
+
+        {/* Lùi 1 trang */}
+        <Button
+          variant="outline" size="icon"
+          className="h-9 w-9 rounded-lg border-gray-300 text-gray-500 disabled:opacity-50"
+          disabled={currentPage === 0}
+          onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+
+        {/* Các nút số trang (Render dynamic) */}
+        <div className="flex gap-1">
+          {renderPaginationButtons()}
+        </div>
+
+        {/* Tiến 1 trang */}
+        <Button
+          variant="outline" size="icon"
+          className="h-9 w-9 rounded-lg border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50"
+          disabled={currentPage >= totalPages - 1}
+          onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+
+        {/* Về trang cuối */}
+        <Button
+          variant="outline" size="icon"
+          className="h-9 w-9 rounded-lg border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50"
+          disabled={currentPage >= totalPages - 1}
+          onClick={() => setCurrentPage(totalPages - 1)}
+        >
+          <ChevronsRight className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <UserModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} user={editingUser} />
     </div>
   );
 }

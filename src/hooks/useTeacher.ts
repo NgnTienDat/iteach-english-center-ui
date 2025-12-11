@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { TeacherCreatePayload } from "../types/user";
-import { createStaffApi, getAllStaffsApi, getAllTeachersApi } from "../services/userServices";
+import { createStaffApi, getAllStaffsApi, getAllTeachersApi, updateTeacherApi } from "../services/userServices";
+import { toast } from "sonner";
 
 export function useTeacher() {
   const queryClient = useQueryClient();
@@ -30,10 +31,27 @@ export function useTeacher() {
     },
   });
 
+
+
+  // UPDATE TEACHER
+  const { mutate: updateTeacher, isPending: isUpdating } = useMutation({
+    mutationFn: ({ userId, payload }: { userId: string; payload: Partial<TeacherCreatePayload> }) => updateTeacherApi(userId, payload),
+    onSuccess: () => {
+      toast.success("Teacher updated successfully");
+
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+
   return {
     teachersQuery,
     staffsQuery,
     createTeacherMutation,
-    createStaffMutation
+    createStaffMutation,
+    updateTeacher,
+    isUpdating
   };
 }

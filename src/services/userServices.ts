@@ -1,5 +1,6 @@
+import type { PageResponse } from "@/types/common";
 import type { Parent, ParentFormData } from "../types/Parent";
-import type { StaffResponse, StudentCreatePayload, StudentDetail, StudentParams, StudentResponse, StudentUpdatePayload, TeacherCreatePayload, User } from "../types/user";
+import type { StaffResponse, StudentCreatePayload, StudentDetail, StudentParams, StudentResponse, StudentUpdatePayload, TeacherCreatePayload, User, UserCreatePayload } from "../types/user";
 import { AUTH_REQUEST } from "../utils/axiosConfig";
 import { endpoints } from "../utils/endPoint";
 import type { AxiosResponse } from "axios";
@@ -16,11 +17,92 @@ export interface ApiResponse<T> {
 }
 
 
+export async function createUserAccountApi(payload: UserCreatePayload): Promise<void> {
+    try {
+        const res = await AUTH_REQUEST.post(endpoints.CREATE_USER, payload);
+
+        if (res.status !== 201 && res.status !== 200) {
+            throw new Error(res.data?.message || "Creating user failed");
+        }
+    } catch (error: unknown) {
+        if (error && typeof error === "object" && "response" in error) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            throw new Error(
+                axiosError.response?.data?.message ||
+                "An unexpected error occurred while creating user."
+            );
+        }
+        throw new Error("An unexpected error occurred while creating user.");
+    }
+
+}
+
 
 export async function getAllUsersApi(role?: string): Promise<User[]> {
     try {
         const res: AxiosResponse<ApiResponse<User[]>> = await AUTH_REQUEST.get(
             endpoints.ALL_USERS,
+            {
+                params: role ? { role } : {},
+            }
+        );
+
+        if (res.status !== 200 || res.data.code !== 200) {
+            throw new Error(res.data?.message || "Fetching users failed");
+        }
+
+        return res.data.result;
+    } catch (error: unknown) {
+        if (error && typeof error === "object" && "response" in error) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            throw new Error(
+                axiosError.response?.data?.message ||
+                "An unexpected error occurred while fetching users."
+            );
+        }
+
+        throw new Error("An unexpected error occurred while fetching users.");
+    }
+}
+
+
+
+export async function getAllUsersPageApi(
+    role?: string,
+    page: number = 0,
+    size: number = 10
+): Promise<PageResponse<User>> {
+    try {
+        const res: AxiosResponse<ApiResponse<PageResponse<User>>> = await AUTH_REQUEST.get(
+            endpoints.ALL_USERS_PAGE,
+            {
+                params: role ? { role, page, size } : { page, size },
+            }
+        );
+
+        if (res.status !== 200 || res.data.code !== 200) {
+            throw new Error(res.data?.message || "Fetching users failed");
+        }
+
+        return res.data.result as PageResponse<User>;
+    } catch (error: unknown) {
+        if (error && typeof error === "object" && "response" in error) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            throw new Error(
+                axiosError.response?.data?.message ||
+                "An unexpected error occurred while fetching users."
+            );
+        }
+
+        throw new Error("An unexpected error occurred while fetching users.");
+    }
+}
+
+
+export async function getAllUnlinkedUsersApi(role?: string): Promise<User[]> {
+    try {
+        const res: AxiosResponse<ApiResponse<User[]>> = await AUTH_REQUEST.get(
+            endpoints.ALL_UNLINKED_USERS,
             {
                 params: role ? { role } : {},
             }
@@ -175,7 +257,7 @@ export async function getAllStudentAvailableApi(): Promise<User[]> {
     }
 }
 
-export async function createParentApi(payload: Partial<ParentFormData>): Promise<void> {    
+export async function createParentApi(payload: Partial<ParentFormData>): Promise<void> {
     try {
         const res = await AUTH_REQUEST.post(endpoints.CREATE_PARENT, payload);
         if (res.status !== 201 && res.status !== 200) {
@@ -274,7 +356,7 @@ export async function updateStudentApi(userId: string, payload: Partial<StudentU
                 axiosError.response?.data?.message ||
                 "An unexpected error occurred while updating student."
             );
-        }   
+        }
         throw new Error("An unexpected error occurred while updating student.");
     }
 }
@@ -298,3 +380,47 @@ export async function deleteUserApi(userId: string): Promise<void> {
         throw new Error("An unexpected error occurred while deleting user.");
     }
 }
+
+export async function updateUserApi(userId: string, payload: Partial<UserCreatePayload>): Promise<void> {
+    try {
+        const res = await AUTH_REQUEST.patch(
+            endpoints.UPDATE_USER(userId),
+            payload
+        );
+        if (res.status !== 200) {
+            throw new Error(res.data?.message || "Updating user failed");
+        }
+    } catch (error: unknown) {
+        if (error && typeof error === "object" && "response" in error) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            throw new Error(
+                axiosError.response?.data?.message ||
+                "An unexpected error occurred while updating user."
+            );
+        }
+        throw new Error("An unexpected error occurred while updating user.");
+    }
+}
+
+
+export async function updateTeacherApi(userId: string, payload: Partial<TeacherCreatePayload>): Promise<void> {
+    try {
+        const res = await AUTH_REQUEST.patch(
+            endpoints.UPDATE_TEACHER(userId),
+            payload
+        );
+        if (res.status !== 200) {
+            throw new Error(res.data?.message || "Updating teacher failed");
+        }
+    } catch (error: unknown) {
+        if (error && typeof error === "object" && "response" in error) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            throw new Error(
+                axiosError.response?.data?.message ||
+                "An unexpected error occurred while updating teacher."
+            );
+        }
+        throw new Error("An unexpected error occurred while updating teacher.");
+    }
+}
+

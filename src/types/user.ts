@@ -8,8 +8,17 @@ export interface User {
   avatar: string | null;
   fullName: string;
   createdAt: string;
+  address: string | null;
   active: boolean;
   roles: Role[];
+}
+
+export interface UserCreatePayload {
+  email: string;
+  fullName: string;
+  role: string;
+  password?: string;
+  active?: boolean;
 }
 
 export interface Role {
@@ -17,13 +26,21 @@ export interface Role {
   description: string;
 }
 
+export interface OnlineLearningCreatePayload {
+  platformName: string;
+  username: string;
+  password: string;
+}
+
 export interface StudentCreatePayload {
-  email: string;
-  fullName: string;
+  userId: string;
   phoneNumber: string;
-  classId: string;
   courseId: string;
   status: string;
+  classId: string;
+  address: string;
+  birthday: string;
+  onlineLearningAccounts: OnlineLearningCreatePayload[];
 }
 
 export interface StudentParams {
@@ -42,7 +59,7 @@ export interface StudentResponse {
   fullName: string;
   createdAt: string;
   active: boolean;
-  parent: Parent | null; 
+  parent: Parent | null;
 }
 
 
@@ -51,6 +68,14 @@ export interface ShortClass {
   className: string;
   status: 'In progress' | 'Completed' | string;
 }
+
+export interface OnlineLearningAccountResponse {
+  platformName: string;
+  username: string;
+  password: string;
+}
+
+
 
 export interface StudentDetail {
   id: string;
@@ -61,7 +86,10 @@ export interface StudentDetail {
   fullName: string;
   createdAt: string;
   active: boolean;
+  birthday: string;
+  address: string;
   studied: ShortClass[];
+  onlineLearningAccounts: OnlineLearningAccountResponse[];
 }
 
 
@@ -70,10 +98,10 @@ export interface TeacherCreatePayload {
   fullName: string;
   phoneNumber: string;
   status: string;
-  department: string;
   position?: string;
   startDate?: string;
-  type: string;
+  type: string; /// Để phân biệt teacher và staff (đã xóa create staff nhưng chưa xóa type này, nếu ai đó sửa lại thì xóa cái này đi)
+  active?: boolean;
 }
 
 export interface Staff {
@@ -98,6 +126,8 @@ export interface StaffResponse {
   department: string;
 }
 
+
+
 export interface StudentUpdatePayload {
   id: string;
   fullName: string;
@@ -105,3 +135,5 @@ export interface StudentUpdatePayload {
   phoneNumber: string;
   active: boolean;
 }
+
+
